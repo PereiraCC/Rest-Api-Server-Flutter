@@ -1,4 +1,5 @@
 import { Request, Response } from "express";
+import db from '../db/config';
 
 export const getAgents = (req : Request, res : Response) => {
 

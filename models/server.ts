@@ -2,7 +2,6 @@ import express, { Application } from 'express';
 import cors from 'cors';
 
 import agentRoutes from '../routes/agent';
-// import db from '../db/connection';
 
 class Server {
 
@@ -26,28 +25,28 @@ class Server {
         this.routes();
     }
 
-    async dbConnection() {
+    // async dbConnection() {
 
-        try {
+    //     try {
             
-            // await db.authenticate();
-            // console.log('Database online')
+    //         // await db.authenticate();
+    //         // console.log('Database online')
 
-        } catch (error : any ) {
-            throw new Error( error );
-        }
+    //     } catch (error : any ) {
+    //         throw new Error( error );
+    //     }
 
-    }
+    // }
 
     middlewares() {
 
         // CORS
         this.app.use( cors() );
 
-        // Lectura del body
+        // Read of body
         this.app.use( express.json() );
 
-        // Carpeta publica
+        // Folder public
         this.app.use( express.static('public') );
     }
 
