@@ -14,21 +14,21 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
-// import userRoutes from '../routes/usuarios';
+const agent_1 = __importDefault(require("../routes/agent"));
 // import db from '../db/connection';
 class Server {
     constructor() {
         this.apiPaths = {
-            usuarios: '/api/agents'
+            agents: '/api/agents'
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8082';
-        // Conexion a la base de datos
+        // connection to the database
         // this.dbConnection();
         // Middlewares
-        // this.middlewares();
-        // Definir mis rutas
-        // this.routes();
+        this.middlewares();
+        // Set routes
+        this.routes();
     }
     dbConnection() {
         return __awaiter(this, void 0, void 0, function* () {
@@ -50,7 +50,7 @@ class Server {
         this.app.use(express_1.default.static('public'));
     }
     routes() {
-        // this.app.use( this.apiPaths.usuarios, userRoutes );
+        this.app.use(this.apiPaths.agents, agent_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {
