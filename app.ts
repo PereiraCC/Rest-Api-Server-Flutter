@@ -1,4 +1,11 @@
+import dotenv from 'dotenv';
+import Server from './models/server';
 
-export const name = 'Carlos Pereira Ts';
+// Configuration of dotenv
+dotenv.config();
 
-console.log(name);
+// Instance of Model Server
+const server = new Server();
+
+// Calling the express server listener function
+server.listen();
