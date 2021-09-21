@@ -1,17 +1,15 @@
 "use strict";
+// Import the functions you need from the SDKs you need
+// import firebase from "firebase/app";
+// import { getFirestore } from 'firebase/firestore';
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-// Import the functions you need from the SDKs you need
 const app_1 = __importDefault(require("firebase/app"));
-const firestore_1 = require("firebase/firestore");
+require("firebase/firestore");
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
-// TODO: Add SDKs for Firebase products that you want to use
-// https://firebase.google.com/docs/web/setup#available-libraries
-// Your web app's Firebase configuration
-// For Firebase JS SDK v7.20.0 and later, measurementId is optional
 const firebaseConfig = {
     apiKey: process.env.APIKEYDB,
     authDomain: process.env.AUTHDOMAINDB,
@@ -24,5 +22,6 @@ const firebaseConfig = {
 };
 // Initialize Firebase
 app_1.default.initializeApp(firebaseConfig);
-exports.default = (0, firestore_1.getFirestore)();
+console.log('Firabase is ready');
+exports.default = app_1.default.firestore();
 //# sourceMappingURL=config.js.map

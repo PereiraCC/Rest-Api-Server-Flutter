@@ -9,9 +9,12 @@ router.get('/', agent_1.getAgents);
 router.get('/:id', agent_1.getAgentById);
 router.post('/', [
     (0, express_validator_1.check)('identification', 'The identification field is required.').not().isEmpty(),
-    (0, express_validator_1.check)('identification', 'The identification field must be numeric').isNumeric(),
+    // check('identification', 'The identification field must be numeric').isNumeric(),
     // TODO: Validation: if identification exists and injection sql over identification field
     (0, express_validator_1.check)('name', 'The name field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('lastname', 'The last name field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('email', 'The email field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('phone', 'The phone field is required.').not().isEmpty(),
     inputs_validation_1.fieldsValidation
 ], agent_1.postAgent);
 router.put('/:id', agent_1.putAgent);

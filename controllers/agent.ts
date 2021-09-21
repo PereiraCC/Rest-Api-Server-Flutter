@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
+
 import db from '../db/config';
+import Agent from "../models/agent";
+
+const agentRef = db.collection('agents');
 
 export const getAgents = (req : Request, res : Response) => {
 
@@ -20,15 +24,28 @@ export const getAgentById = (req : Request, res : Response) => {
 
 }
 
-export const postAgent = (req : Request, res : Response) => {
+export const postAgent = async (req : Request, res : Response) => {
 
-    const { body } = req;
+    const { identification, name, lastname, email, phone } = req.body;
 
-    res.json({
-        msg: 'post an agent',
-        body
-    });
+    try {
+        
+        const agent = new Agent(identification, name, lastname, email, phone);
+        const data = agent.fromJson();
 
+        await agentRef.add(data);
+        
+        res.status(201).json({
+            ok: true,
+            data
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+           msg: 'Error when creating an agent.'
+        });
+    }
 }
 
 export const putAgent = (req : Request, res : Response) => {

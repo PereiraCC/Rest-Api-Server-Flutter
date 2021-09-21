@@ -14,9 +14,12 @@ router.get('/:id', getAgentById );
 
 router.post('/', [
     check('identification','The identification field is required.').not().isEmpty(),
-    check('identification', 'The identification field must be numeric').isNumeric(),
+    // check('identification', 'The identification field must be numeric').isNumeric(),
     // TODO: Validation: if identification exists and injection sql over identification field
     check('name','The name field is required.').not().isEmpty(),
+    check('lastname','The last name field is required.').not().isEmpty(),
+    check('email','The email field is required.').not().isEmpty(),
+    check('phone','The phone field is required.').not().isEmpty(),
     fieldsValidation
 ], postAgent);
 
