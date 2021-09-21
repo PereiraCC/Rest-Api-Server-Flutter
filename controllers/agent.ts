@@ -1,15 +1,31 @@
-import { Request, Response } from "express";
+import { Request, response, Response } from "express";
 
 import db from '../db/config';
+import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 import Agent from "../models/agent";
 
 const agentRef = db.collection('agents');
 
-export const getAgents = (req : Request, res : Response) => {
+export const getAgents = async (req : Request, res : Response) => {
 
-    res.json({
-        msg: 'get agents'
-    });
+    try {
+        
+        const resp = await agentRef.where('status', '==', true).get();
+
+        const documents = returnDocsFirebase(resp);
+
+        return res.status(200).json({
+            ok: true,
+            total : documents.length,
+            documents
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            msg: 'Error when get all agents.'
+        });
+    }
 
 }
 
@@ -35,7 +51,7 @@ export const postAgent = async (req : Request, res : Response) => {
 
         const doc = await agentRef.add(data);
         // console.log(doc.id);
-        
+
         res.status(201).json({
             ok: true,
             id_agent : doc.id,

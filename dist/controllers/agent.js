@@ -14,13 +14,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAgent = exports.putAgent = exports.postAgent = exports.getAgentById = exports.getAgents = void 0;
 const config_1 = __importDefault(require("../db/config"));
+const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
 const agent_1 = __importDefault(require("../models/agent"));
 const agentRef = config_1.default.collection('agents');
-const getAgents = (req, res) => {
-    res.json({
-        msg: 'get agents'
-    });
-};
+const getAgents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const resp = yield agentRef.where('status', '==', true).get();
+        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
+        return res.status(200).json({
+            ok: true,
+            total: documents.length,
+            documents
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            msg: 'Error when get all agents.'
+        });
+    }
+});
 exports.getAgents = getAgents;
 const getAgentById = (req, res) => {
     const { id } = req.params;
