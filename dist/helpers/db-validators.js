@@ -8,9 +8,29 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.existsIdentification = void 0;
-const existsIdentification = () => __awaiter(void 0, void 0, void 0, function* () {
+exports.existsIdentification = exports.inyectionSqlInputs = void 0;
+const config_1 = __importDefault(require("../db/config"));
+const agentRef = config_1.default.collection('agents');
+const inyectionSqlInputs = (data) => {
+    console.log('data', data.toUpperCase());
+    if (data.toUpperCase().includes('SELECT') || data.toUpperCase().includes('DELETE') ||
+        data.toUpperCase().includes('UPDATE') || data.toUpperCase().includes('INSERT')) {
+        throw new Error('Error: Invalid data');
+    }
+};
+exports.inyectionSqlInputs = inyectionSqlInputs;
+const existsIdentification = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const resp = yield agentRef.where('identification', '==', id).get();
+    // resp.docs.forEach((doc) => {
+    //     console.log(doc.data());
+    // })
+    if (resp.docs.length > 0) {
+        throw new Error('Error: The identification is already in the database');
+    }
 });
 exports.existsIdentification = existsIdentification;
 //# sourceMappingURL=db-validators.js.map

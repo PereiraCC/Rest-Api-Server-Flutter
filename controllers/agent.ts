@@ -34,10 +34,11 @@ export const postAgent = async (req : Request, res : Response) => {
         const data = agent.fromJson();
 
         const doc = await agentRef.add(data);
-        console.log(doc);
+        // console.log(doc.id);
         
         res.status(201).json({
             ok: true,
+            id_agent : doc.id,
             data
         });
 

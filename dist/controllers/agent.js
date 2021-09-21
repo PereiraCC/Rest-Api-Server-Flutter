@@ -36,9 +36,10 @@ const postAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const agent = new agent_1.default(identification, name, lastname, email, phone, true);
         const data = agent.fromJson();
         const doc = yield agentRef.add(data);
-        console.log(doc);
+        // console.log(doc.id);
         res.status(201).json({
             ok: true,
+            id_agent: doc.id,
             data
         });
     }
