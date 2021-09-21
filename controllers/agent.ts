@@ -109,6 +109,13 @@ export const putAgent = async (req : Request, res : Response) => {
         // Obtain the identification document
         let docRef = await getAgent(id);
 
+        // Verification if there is an agent
+        if(!docRef?.exists){
+            return res.status(400).json({
+                msg: 'Error The identification is not already in the database'
+            }); 
+        }
+
         // Fields: identification and status 
         data.identification = docRef?.data().identification;
         data.status = true;
@@ -143,6 +150,13 @@ export const deleteAgent = async (req : Request, res : Response) => {
 
         // Obtain the identification document
         let docRef = await getAgent(id);
+
+        // Verification if there is an agent
+        if(!docRef?.exists){
+            return res.status(400).json({
+                msg: 'Error The identification is not already in the database'
+            }); 
+        }
 
         // Update the documento with status in false
         await agentRef.doc(docRef?.id).update({

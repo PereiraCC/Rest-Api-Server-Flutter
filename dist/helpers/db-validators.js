@@ -14,9 +14,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.existsAgentbyId = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
 const config_1 = __importDefault(require("../db/config"));
+// Reference the agents collection in database 
 const agentRef = config_1.default.collection('agents');
 const inyectionSqlInputs = (data) => {
-    console.log('data', data.toUpperCase());
     if (data.toUpperCase().includes('SELECT') || data.toUpperCase().includes('DELETE') ||
         data.toUpperCase().includes('UPDATE') || data.toUpperCase().includes('INSERT')) {
         throw new Error('Error: Invalid data');
@@ -24,17 +24,21 @@ const inyectionSqlInputs = (data) => {
 };
 exports.inyectionSqlInputs = inyectionSqlInputs;
 const existsIdentification = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get data from database with id equal
     const resp = yield agentRef.where('identification', '==', id).get();
     // resp.docs.forEach((doc) => {
     //     console.log(doc.data());
     // })
+    // check for documents
     if (resp.docs.length > 0) {
         throw new Error('Error: The identification is already in the database');
     }
 });
 exports.existsIdentification = existsIdentification;
 const existsAgentbyId = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    // Obtain all agents with id equal
     const resp = yield agentRef.where('identification', '==', id).get();
+    // Check for documents
     if (resp.docs.length == 0) {
         throw new Error('Error: The identification is not already in the database');
     }

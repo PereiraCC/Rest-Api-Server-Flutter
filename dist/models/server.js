@@ -37,6 +37,7 @@ class Server {
         this.app.use(express_1.default.static('public'));
     }
     routes() {
+        // Set agents route
         this.app.use(this.apiPaths.agents, agent_1.default);
     }
     listen() {

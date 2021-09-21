@@ -9,6 +9,7 @@ require("firebase/firestore");
 // Import and configure dotenv
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
+// Object with firabase configuration
 const firebaseConfig = {
     apiKey: process.env.APIKEYDB,
     authDomain: process.env.AUTHDOMAINDB,
