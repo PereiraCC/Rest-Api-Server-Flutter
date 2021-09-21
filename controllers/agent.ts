@@ -29,9 +29,34 @@ export const getAgents = async (req : Request, res : Response) => {
 
 }
 
-export const getAgentById = (req : Request, res : Response) => {
+export const getAgentById = async (req : Request, res : Response) => {
 
     const { id } = req.params;
+
+    try {
+        
+        const resp = await agentRef.where('status', '==', true)
+                                   .where('identification','==', id).get();
+
+        if( resp.docs.length == 0 ){
+            return res.status(404).json({
+                msg: 'Agent with that ID not found in the database.'
+            });
+        }
+
+        const documents = returnDocsFirebase(resp);
+
+        return res.status(200).json({
+            ok: true,
+            documents
+        });
+
+    } catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            msg: 'Error when get an agent.'
+        });
+    }
 
     res.json({
         msg: 'get agents by id',

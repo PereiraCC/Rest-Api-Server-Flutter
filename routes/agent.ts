@@ -11,7 +11,10 @@ const router = Router();
 
 router.get('/', getAgents);
 
-router.get('/:id', getAgentById );
+router.get('/:id', [
+    check('id', 'The identification parameter must be numeric.').isNumeric(),
+    fieldsValidation
+], getAgentById );
 
 router.post('/', [
     check('identification','The identification field is required.').not().isEmpty(),

@@ -35,13 +35,33 @@ const getAgents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getAgents = getAgents;
-const getAgentById = (req, res) => {
+const getAgentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
+    try {
+        const resp = yield agentRef.where('status', '==', true)
+            .where('identification', '==', id).get();
+        if (resp.docs.length == 0) {
+            return res.status(404).json({
+                msg: 'Agent with that ID not found in the database.'
+            });
+        }
+        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
+        return res.status(200).json({
+            ok: true,
+            documents
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            msg: 'Error when get an agent.'
+        });
+    }
     res.json({
         msg: 'get agents by id',
         id
     });
-};
+});
 exports.getAgentById = getAgentById;
 const postAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { identification, name, lastname, email, phone } = req.body;

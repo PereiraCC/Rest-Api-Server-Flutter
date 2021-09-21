@@ -7,7 +7,10 @@ const db_validators_1 = require("../helpers/db-validators");
 const inputs_validation_1 = require("../middlewares/inputs-validation");
 const router = (0, express_1.Router)();
 router.get('/', agent_1.getAgents);
-router.get('/:id', agent_1.getAgentById);
+router.get('/:id', [
+    (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
+    inputs_validation_1.fieldsValidation
+], agent_1.getAgentById);
 router.post('/', [
     (0, express_validator_1.check)('identification', 'The identification field is required.').not().isEmpty(),
     (0, express_validator_1.check)('identification', 'The identification field must be numeric').isNumeric(),
