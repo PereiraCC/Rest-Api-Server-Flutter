@@ -30,10 +30,11 @@ export const postAgent = async (req : Request, res : Response) => {
 
     try {
         
-        const agent = new Agent(identification, name, lastname, email, phone);
+        const agent = new Agent(identification, name, lastname, email, phone, true);
         const data = agent.fromJson();
 
-        await agentRef.add(data);
+        const doc = await agentRef.add(data);
+        console.log(doc);
         
         res.status(201).json({
             ok: true,

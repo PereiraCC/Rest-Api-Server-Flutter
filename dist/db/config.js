@@ -1,13 +1,12 @@
 "use strict";
-// Import the functions you need from the SDKs you need
-// import firebase from "firebase/app";
-// import { getFirestore } from 'firebase/firestore';
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+// Import the functions you need from the SDKs you need
 const app_1 = __importDefault(require("firebase/app"));
 require("firebase/firestore");
+// Import and configure dotenv
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const firebaseConfig = {

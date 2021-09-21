@@ -1,12 +1,9 @@
 // Import the functions you need from the SDKs you need
-// import firebase from "firebase/app";
-// import { getFirestore } from 'firebase/firestore';
-
 import firebase from "firebase/app";
 import "firebase/firestore";
 
+// Import and configure dotenv
 import dotenv from 'dotenv';
-
 dotenv.config();
 
 const firebaseConfig = {

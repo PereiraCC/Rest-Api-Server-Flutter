@@ -33,9 +33,10 @@ exports.getAgentById = getAgentById;
 const postAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { identification, name, lastname, email, phone } = req.body;
     try {
-        const agent = new agent_1.default(identification, name, lastname, email, phone);
+        const agent = new agent_1.default(identification, name, lastname, email, phone, true);
         const data = agent.fromJson();
-        yield agentRef.add(data);
+        const doc = yield agentRef.add(data);
+        console.log(doc);
         res.status(201).json({
             ok: true,
             data
