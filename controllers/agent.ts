@@ -1,8 +1,8 @@
-import { Request, response, Response } from "express";
+import { Request, Response } from "express";
 
 import db from '../db/config';
-import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 import Agent from "../models/agent";
+import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 
 
 const agentRef = db.collection('agents');
@@ -116,20 +116,37 @@ export const putAgent = async (req : Request, res : Response) => {
     }
 }
 
-export const deleteAgent = (req : Request, res : Response) => {
+export const deleteAgent = async (req : Request, res : Response) => {
 
     const { id } = req.params;
 
-    res.json({
-        msg: 'delete an agent by id',
-        id
-    });
+    try {
+        
+        let docRef = await getAgent(id);
 
+        await agentRef.doc(docRef?.id).update({
+            status : false
+        });
+
+        docRef = await getAgent(id, false);
+
+        res.json({
+            ok: true,
+            id_agent : docRef?.id,
+            agent : docRef?.data()
+        });
+
+    } catch (error) {
+       console.log(error);
+       return res.status(400).json({
+          msg: 'Error when deleting an agent.'
+       });
+    }
 }
 
-const getAgent = async (id : String) => {
+const getAgent = async (id : String, status = true) => {
 
-    const resp = await agentRef.where('status', '==', true)
+    const resp = await agentRef.where('status', '==', status)
                                    .where('identification','==', id).get();
 
     const docRef = resp.docs.find((doc) => {

@@ -37,7 +37,11 @@ router.put('/:id', [
     fieldsValidation
 ], putAgent );
 
-router.delete('/:id', deleteAgent );
+router.delete('/:id', [
+    check('id', 'The identification parameter must be numeric.').isNumeric(),
+    check('id').custom(existsAgentbyId),
+    fieldsValidation
+], deleteAgent );
 
 
 

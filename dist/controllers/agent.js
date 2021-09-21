@@ -25,8 +25,8 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteAgent = exports.putAgent = exports.postAgent = exports.getAgentById = exports.getAgents = void 0;
 const config_1 = __importDefault(require("../db/config"));
-const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
 const agent_1 = __importDefault(require("../models/agent"));
+const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
 const agentRef = config_1.default.collection('agents');
 const getAgents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
@@ -114,16 +114,30 @@ const putAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.putAgent = putAgent;
-const deleteAgent = (req, res) => {
+const deleteAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const { id } = req.params;
-    res.json({
-        msg: 'delete an agent by id',
-        id
-    });
-};
+    try {
+        let docRef = yield getAgent(id);
+        yield agentRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update({
+            status: false
+        });
+        docRef = yield getAgent(id, false);
+        res.json({
+            ok: true,
+            id_agent: docRef === null || docRef === void 0 ? void 0 : docRef.id,
+            agent: docRef === null || docRef === void 0 ? void 0 : docRef.data()
+        });
+    }
+    catch (error) {
+        console.log(error);
+        return res.status(400).json({
+            msg: 'Error when deleting an agent.'
+        });
+    }
+});
 exports.deleteAgent = deleteAgent;
-const getAgent = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const resp = yield agentRef.where('status', '==', true)
+const getAgent = (id, status = true) => __awaiter(void 0, void 0, void 0, function* () {
+    const resp = yield agentRef.where('status', '==', status)
         .where('identification', '==', id).get();
     const docRef = resp.docs.find((doc) => {
         if (doc.data().identification === id) {
