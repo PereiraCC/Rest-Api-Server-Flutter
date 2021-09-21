@@ -5,6 +5,7 @@ import agentRoutes from '../routes/agent';
 
 class Server {
 
+    // Property declaration
     private app : Application;
     private port : string;
     private apiPaths = {
@@ -51,6 +52,7 @@ class Server {
     }
 
     routes() {
+        // Set agents route
         this.app.use( this.apiPaths.agents, agentRoutes );
     }
 
