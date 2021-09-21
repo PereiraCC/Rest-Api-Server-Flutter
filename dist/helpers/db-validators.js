@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.existsIdentification = exports.inyectionSqlInputs = void 0;
+exports.existsAgentbyId = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
 const config_1 = __importDefault(require("../db/config"));
 const agentRef = config_1.default.collection('agents');
 const inyectionSqlInputs = (data) => {
@@ -33,4 +33,11 @@ const existsIdentification = (id) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.existsIdentification = existsIdentification;
+const existsAgentbyId = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const resp = yield agentRef.where('identification', '==', id).get();
+    if (resp.docs.length == 0) {
+        throw new Error('Error: The identification is not already in the database');
+    }
+});
+exports.existsAgentbyId = existsAgentbyId;
 //# sourceMappingURL=db-validators.js.map

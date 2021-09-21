@@ -3,7 +3,7 @@ import { check } from "express-validator";
 
 
 import { deleteAgent, getAgentById, getAgents, postAgent, putAgent } from "../controllers/agent";
-import { existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
+import { existsAgentbyId, existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
 import { fieldsValidation } from "../middlewares/inputs-validation";
 
 
@@ -31,7 +31,11 @@ router.post('/', [
     fieldsValidation
 ], postAgent);
 
-router.put(   '/:id', putAgent );
+router.put('/:id', [
+    check('id', 'The identification parameter must be numeric.').isNumeric(),
+    check('id').custom(existsAgentbyId),
+    fieldsValidation
+], putAgent );
 
 router.delete('/:id', deleteAgent );
 

@@ -25,7 +25,11 @@ router.post('/', [
     (0, express_validator_1.check)('phone', 'The phone field must be numeric').isNumeric(),
     inputs_validation_1.fieldsValidation
 ], agent_1.postAgent);
-router.put('/:id', agent_1.putAgent);
+router.put('/:id', [
+    (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
+    (0, express_validator_1.check)('id').custom(db_validators_1.existsAgentbyId),
+    inputs_validation_1.fieldsValidation
+], agent_1.putAgent);
 router.delete('/:id', agent_1.deleteAgent);
 exports.default = router;
 //# sourceMappingURL=agent.js.map

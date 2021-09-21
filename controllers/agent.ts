@@ -4,6 +4,7 @@ import db from '../db/config';
 import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 import Agent from "../models/agent";
 
+
 const agentRef = db.collection('agents');
 
 export const getAgents = async (req : Request, res : Response) => {
@@ -57,12 +58,6 @@ export const getAgentById = async (req : Request, res : Response) => {
             msg: 'Error when get an agent.'
         });
     }
-
-    res.json({
-        msg: 'get agents by id',
-        id
-    });
-
 }
 
 export const postAgent = async (req : Request, res : Response) => {
@@ -91,17 +86,34 @@ export const postAgent = async (req : Request, res : Response) => {
     }
 }
 
-export const putAgent = (req : Request, res : Response) => {
+export const putAgent = async (req : Request, res : Response) => {
 
     const { id } = req.params;
-    const { body } = req;
+    const { ...data } = req.body;
 
-    res.json({
-        msg: 'put an agent by id',
-        id, 
-        body
-    });
+    try {
+        
+        let docRef = await getAgent(id);
 
+        data.identification = docRef?.data().identification;
+        data.status = true;
+
+        await agentRef.doc(docRef?.id).update(data);
+
+        docRef = await getAgent(id);
+
+        res.json({
+            ok: true,
+            id_agent : docRef?.id,
+            agent : docRef?.data()
+        });
+       
+    } catch (error) {
+       console.log(error);
+       return res.status(400).json({
+          msg: 'Error when updating an agent.'
+       }); 
+    }
 }
 
 export const deleteAgent = (req : Request, res : Response) => {
@@ -112,5 +124,20 @@ export const deleteAgent = (req : Request, res : Response) => {
         msg: 'delete an agent by id',
         id
     });
+
+}
+
+const getAgent = async (id : String) => {
+
+    const resp = await agentRef.where('status', '==', true)
+                                   .where('identification','==', id).get();
+
+    const docRef = resp.docs.find((doc) => {
+        if(doc.data().identification === id){
+            return doc;
+        }
+    });
+
+    return docRef;
 
 }

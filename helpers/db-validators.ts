@@ -25,3 +25,14 @@ export const existsIdentification = async (id : string) => {
     }
 
 }
+
+export const existsAgentbyId = async (id : string) => {
+
+    const resp = await agentRef.where('identification', '==', id).get();
+
+
+    if( resp.docs.length == 0 ){
+        throw new Error('Error: The identification is not already in the database');
+    }
+
+}
