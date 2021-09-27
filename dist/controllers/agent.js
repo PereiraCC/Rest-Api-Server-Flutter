@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteAgent = exports.putAgent = exports.postAgent = exports.getAgentById = exports.getAgents = void 0;
+exports.getAgent = exports.deleteAgent = exports.putAgent = exports.postAgent = exports.getAgentById = exports.getAgents = void 0;
 // Import db configuration, model and helpers
 const config_1 = __importDefault(require("../db/config"));
 const agent_1 = __importDefault(require("../models/agent"));
@@ -111,7 +111,7 @@ const putAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const data = __rest(req.body, []);
     try {
         // Obtain the identification document
-        let docRef = yield getAgent(id);
+        let docRef = yield (0, exports.getAgent)(id);
         // Verification if there is an agent
         if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
             return res.status(400).json({
@@ -124,7 +124,7 @@ const putAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Update the document with new data
         yield agentRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update(data);
         // Obtain the new data
-        docRef = yield getAgent(id);
+        docRef = yield (0, exports.getAgent)(id);
         // Send data
         res.json({
             ok: true,
@@ -145,7 +145,7 @@ const deleteAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const { id } = req.params;
     try {
         // Obtain the identification document
-        let docRef = yield getAgent(id);
+        let docRef = yield (0, exports.getAgent)(id);
         // Verification if there is an agent
         if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
             return res.status(400).json({
@@ -157,7 +157,7 @@ const deleteAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             status: false
         });
         // Obtain new data 
-        docRef = yield getAgent(id, false);
+        docRef = yield (0, exports.getAgent)(id, false);
         // Send data
         res.json({
             ok: true,
@@ -185,4 +185,5 @@ const getAgent = (id, status = true) => __awaiter(void 0, void 0, void 0, functi
     });
     return docRef;
 });
+exports.getAgent = getAgent;
 //# sourceMappingURL=agent.js.map

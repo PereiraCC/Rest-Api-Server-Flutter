@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.existsAgentbyId = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
+exports.allowableCollections = exports.existsAgentbyId = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
 const config_1 = __importDefault(require("../db/config"));
 // Reference the agents collection in database 
 const agentRef = config_1.default.collection('agents');
@@ -44,4 +44,12 @@ const existsAgentbyId = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.existsAgentbyId = existsAgentbyId;
+const allowableCollections = (collection = '', collections = []) => {
+    const included = collections.includes(collection);
+    if (!included) {
+        throw new Error(`The collection: ${collection} is not allowed, ${collections}`);
+    }
+    return true;
+};
+exports.allowableCollections = allowableCollections;
 //# sourceMappingURL=db-validators.js.map

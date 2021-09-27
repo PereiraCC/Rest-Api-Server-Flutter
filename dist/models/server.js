@@ -5,11 +5,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
+const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const agent_1 = __importDefault(require("../routes/agent"));
+const uploads_1 = __importDefault(require("../routes/uploads"));
 class Server {
     constructor() {
         this.apiPaths = {
-            agents: '/api/agents'
+            agents: '/api/agents',
+            uploads: '/api/uploads'
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8082';
@@ -35,10 +38,16 @@ class Server {
         this.app.use(express_1.default.json());
         // Folder public
         this.app.use(express_1.default.static('public'));
+        // Fileupload
+        this.app.use((0, express_fileupload_1.default)({
+            useTempFiles: true,
+            tempFileDir: '/temp/'
+        }));
     }
     routes() {
         // Set agents route
         this.app.use(this.apiPaths.agents, agent_1.default);
+        this.app.use(this.apiPaths.uploads, uploads_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {
