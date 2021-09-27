@@ -47,7 +47,7 @@ exports.existsAgentbyId = existsAgentbyId;
 const allowableCollections = (collection = '', collections = []) => {
     const included = collections.includes(collection);
     if (!included) {
-        throw new Error(`The collection: ${collection} is not allowed, ${collections}`);
+        throw new Error(`The collection: ${collection} is not allowed, Collections: ${collections}`);
     }
     return true;
 };

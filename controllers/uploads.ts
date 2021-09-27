@@ -1,16 +1,15 @@
-// import path from 'path';
 import db from '../db/config';
 import { Request, Response } from "express";
-// import fileUpload from 'express-fileupload';
+import { UploadedFile } from 'express-fileupload';
 
 // Reference to collection of agents in firebase
 const agentRef = db.collection('agents');
 
+// Configuration of cloudinary
 const cloudinary = require('cloudinary').v2;
 cloudinary.config(process.env.CLOUDINARY_URL);
 
 import { getAgent } from './agent';
-import { UploadedFile } from 'express-fileupload';
 import { extensionValidation } from '../helpers/files-validators';
 
 export const uploadFile = async (req : Request, res : Response) => {
@@ -43,7 +42,7 @@ export const uploadFile = async (req : Request, res : Response) => {
         try {
             const { tempFilePath, name} = req.files?.file as UploadedFile;
 
-            const resp: Boolean = extensionValidation(name, ['png', 'jpg', 'JPG', 'jpeg', 'gif']);
+            const resp: Boolean = extensionValidation(name, ['png', 'jpg', 'jpeg', 'gif']);
 
             if(!resp){
                 return res.status(400).json({

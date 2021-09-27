@@ -13,11 +13,10 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadFile = void 0;
-// import path from 'path';
 const config_1 = __importDefault(require("../db/config"));
-// import fileUpload from 'express-fileupload';
 // Reference to collection of agents in firebase
 const agentRef = config_1.default.collection('agents');
+// Configuration of cloudinary
 const cloudinary = require('cloudinary').v2;
 cloudinary.config(process.env.CLOUDINARY_URL);
 const agent_1 = require("./agent");
@@ -43,7 +42,7 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         try {
             const { tempFilePath, name } = (_a = req.files) === null || _a === void 0 ? void 0 : _a.file;
-            const resp = (0, files_validators_1.extensionValidation)(name, ['png', 'jpg', 'JPG', 'jpeg', 'gif']);
+            const resp = (0, files_validators_1.extensionValidation)(name, ['png', 'jpg', 'jpeg', 'gif']);
             if (!resp) {
                 return res.status(400).json({
                     msg: 'The file extension is not allowed.'
