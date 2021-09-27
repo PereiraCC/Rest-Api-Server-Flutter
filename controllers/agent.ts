@@ -181,7 +181,7 @@ export const deleteAgent = async (req : Request, res : Response) => {
     }
 }
 
-const getAgent = async (id : String, status = true) => {
+export const getAgent = async (id : String, status = true) => {
 
     // Obtain all agents with status true / false (param) and id equal
     const resp = await agentRef.where('status', '==', status)
