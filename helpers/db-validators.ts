@@ -44,7 +44,7 @@ export const allowableCollections = ( collection : String = '', collections : Ar
     const included = collections.includes( collection );
 
     if( !included ) {
-        throw new Error(`The collection: ${ collection } is not allowed, ${collections}`);
+        throw new Error(`The collection: ${ collection } is not allowed, Collections: ${collections}`);
     }
     return true;
 

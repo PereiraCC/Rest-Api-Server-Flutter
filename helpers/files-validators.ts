@@ -3,9 +3,9 @@ export const extensionValidation = (fileName : String = '', extensions: Array<St
 
     const cutName = fileName.split('.');
     const extension = cutName[ cutName.length - 1 ];
-    console.log(extension);
+    extensions = extensions.map((e) => e.toUpperCase());
 
-    if( !extensions.includes( extension )){
+    if( !extensions.includes( extension.toUpperCase() )){
         return false;
     }
 
