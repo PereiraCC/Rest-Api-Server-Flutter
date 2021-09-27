@@ -1,7 +1,10 @@
 import express, { Application } from 'express';
 import cors from 'cors';
+import fileUpload from 'express-fileupload';
 
 import agentRoutes from '../routes/agent';
+import uploadRoutes from '../routes/uploads';
+
 
 class Server {
 
@@ -9,7 +12,8 @@ class Server {
     private app : Application;
     private port : string;
     private apiPaths = {
-        agents: '/api/agents'
+        agents: '/api/agents',
+        uploads: '/api/uploads'
     };
 
     constructor() {
@@ -49,11 +53,18 @@ class Server {
 
         // Folder public
         this.app.use( express.static('public') );
+
+        // Fileupload
+        this.app.use(fileUpload({
+            useTempFiles : true,
+            tempFileDir : '/temp/'
+        }));
     }
 
     routes() {
         // Set agents route
-        this.app.use( this.apiPaths.agents, agentRoutes );
+        this.app.use( this.apiPaths.agents,  agentRoutes );
+        this.app.use( this.apiPaths.uploads, uploadRoutes );
     }
 
     listen() {
