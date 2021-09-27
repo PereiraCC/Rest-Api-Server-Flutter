@@ -38,3 +38,14 @@ export const existsAgentbyId = async (id : string) => {
     }
 
 }
+
+export const allowableCollections = ( collection : String = '', collections : Array<String> = []) => {
+
+    const included = collections.includes( collection );
+
+    if( !included ) {
+        throw new Error(`The collection: ${ collection } is not allowed, ${collections}`);
+    }
+    return true;
+
+}
