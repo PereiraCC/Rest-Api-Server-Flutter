@@ -41,7 +41,7 @@ export const uploadFile = async (req : Request, res : Response) => {
 
         try {
             const { tempFilePath, name} = req.files?.file as UploadedFile;
-
+            console.log(tempFilePath);
             const resp: Boolean = extensionValidation(name, ['png', 'jpg', 'jpeg', 'gif']);
 
             if(!resp){

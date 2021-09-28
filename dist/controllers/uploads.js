@@ -42,6 +42,7 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         }
         try {
             const { tempFilePath, name } = (_a = req.files) === null || _a === void 0 ? void 0 : _a.file;
+            console.log(tempFilePath);
             const resp = (0, files_validators_1.extensionValidation)(name, ['png', 'jpg', 'jpeg', 'gif']);
             if (!resp) {
                 return res.status(400).json({

@@ -41,7 +41,8 @@ class Server {
         // Fileupload
         this.app.use((0, express_fileupload_1.default)({
             useTempFiles: true,
-            tempFileDir: '/temp/'
+            tempFileDir: '/tmp/',
+            createParentPath: true
         }));
     }
     routes() {
