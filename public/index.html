@@ -1,37 +1,90 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Agent management REST API</title>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Agent management REST API</title>
 
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
+    integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
+  <link rel="stylesheet" href="style.css">
+  <script src="https://kit.fontawesome.com/62c9503ad6.js" crossorigin="anonymous"></script>
+
 </head>
-<body class="container mt-5">
-    
-    <h1 class="h1">Agent management REST API</h1>
-    <figure>
-        <blockquote class="blockquote">
-          <p>This is the Agent Management REST API.</p>
-          <h3 class="h3">Version 0.5.0</h6>
-          <p>This has the path of the agent with five services.</p>
+
+<body class="container mt-5 bodyCustom">
+ <h1 class="h1">Agent management REST API</h1>
+  <figure>
+    <blockquote class="blockquote">
+      <p>This is the Agent Management REST API.</p>
+
+      <div class="row">
+        <div class="col-4 col-sm-2">
+          <h3 class="h3">Version 0.6.0</h3>
+        </div>
+        <div class="col-4 col-sm-2">
+          <a href="https://documenter.getpostman.com/view/14542124/UUxuj9tR" class="btn btn-primary">View
+            documentation</a>
+        </div>
+      </div>
+
+      <hr>
+      <br>
+
+      <div class="row">
+        <div class="col-4 col-sm-5">
+          <p class="h4">The path of the agent with five services.</p>
           <ol>
-              <li>Get all agents</li>
-              <li>Get an agent by ID</li>
-              <li>Create new agent</li>
-              <li>Update an agent</li>
-              <li>Delete an agent</li>
+            <li>Get all agents</li>
+            <li>Get an agent by ID</li>
+            <li>Create new agent</li>
+            <li>Update an agent</li>
+            <li>Delete an agent</li>
           </ol>
-        </blockquote>
-        <br>
-        <figcaption class="blockquote-footer">
-          Carlos Pereira Coto - September 21, 2021
-        </figcaption>
-      </figure>
+        </div>
+        <div class="col-4 col-sm-5">
+          <p class="h4">The path of the uploads</p>
+          <ol>
+            <li>Upload an agent's profile picture</li>
+            <ul>
+              <li>Only files with extensions: </li>
+              <ol>
+                <li>png</li>
+                <li>jpg</li>
+                <li>jpeg</li>
+                <li>gif</li>
+              </ol>
+            </ul>
+          </ol>
+        </div>
+      </div>
+    </blockquote>
+    <br>
+    
+    <div class="col-6 col-sm-4">
 
-    <hr>
+      <ul class="icons">
+        <li><a href="https://twitter.com/PereiraelTico" class="icon fa fa-twitter" target="_blank"></a></li>
+        <li><a href="https://www.facebook.com/profile.php?id=100009298059974" class="icon fab fa-facebook-f" target="_blank"></a></li>
+        <li><a href="https://github.com/PereiraCC" class="icon fab fa-github" target="_blank"></a></li>
+        <li><a href="https://www.linkedin.com/in/carlos-pereira-coto-247139220/" class="icon fab fa-linkedin" target="_blank"></a></li>
+      </ul>
 
-    <a href="https://documenter.getpostman.com/view/14542124/UUxuj9tR" class="btn btn-primary">View documentation</a>
+    </div>
+    <br>
+    <div class="col-2 col-sm-4">
+      <figcaption class="blockquote-footer">
+        Carlos Pereira Coto - September 29, 2021
+      </figcaption>
+    </div>
+    
+    
+  </figure>
+
+  <hr>
+
 </body>
+
 </html>
