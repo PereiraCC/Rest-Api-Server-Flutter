@@ -1,0 +1,28 @@
+
+.bodyCustom {
+    background-color: black; 
+    color: white;
+}
+
+ul.icons {
+    cursor: default;
+    list-style: none;
+    padding-left: 0;
+}
+
+    ul.icons li {
+        display: inline-block;
+        padding-left: 0;
+        
+    }
+
+    ul.icons a {
+        display: inline-block;
+        width: 2em;
+        height: 2em;
+        line-height: 2em;
+        text-align: center;
+        border: 0;
+        color: white;
+        text-decoration:none
+    }
