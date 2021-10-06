@@ -1,10 +1,10 @@
 // Imports of express
 import { Router } from "express";
-// import { check } from "express-validator";
+import { check } from "express-validator";
 
 // Imports od controller, helpers and middlewares
 import { getUsers, getUserById, postUser, putUser, deleteUser } from "../controllers/user";
-// import { existsAgentbyId, existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
+import { existsIdentificationUser, lenghtPassword } from "../helpers/db-validators";
 import { fieldsValidation } from "../middlewares/inputs-validation";
 
 // Instance of router
@@ -21,17 +21,14 @@ router.get('/:id', [
 
 // Create new user
 router.post('/', [
-    // check('identification','The identification field is required.').not().isEmpty(),
-    // check('identification', 'The identification field must be numeric').isNumeric(),
-    // // check('identification').custom(inyectionSqlInputs),
-    // check('identification').custom(existsIdentification),
-    // check('name','The name field is required.').not().isEmpty(),
-    // // check('name').custom(inyectionSqlInputs),
-    // check('lastname','The last name field is required.').not().isEmpty(),
-    // check('email','The email field is required.').not().isEmpty(),
-    // check('email','The email field is invalid.').isEmail(),
-    // check('phone','The phone field is required.').not().isEmpty(),
-    // check('phone', 'The phone field must be numeric').isNumeric(),
+    check('identification','The identification field is required.').not().isEmpty(),
+    check('identification', 'The identification field must be numeric').isNumeric(),
+    check('identification').custom( existsIdentificationUser ),
+    check('name','The name field is required.').not().isEmpty(),
+    check('email','The email field is required.').not().isEmpty(),
+    check('email','The email field is invalid.').isEmail(),
+    check('password','The password field is required.').not().isEmpty(),
+    check('password').custom( lenghtPassword ),
     fieldsValidation
 ], postUser);
 
