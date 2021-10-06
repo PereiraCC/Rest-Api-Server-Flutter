@@ -49,3 +49,11 @@ export const allowableCollections = ( collection : String = '', collections : Ar
     return true;
 
 }
+
+export const lenghtPassword = async ( password : string ) => {
+
+    if(password.length < 6) {
+        throw new Error(`Error: Password must be longer than 6 characters`);
+    }
+
+}

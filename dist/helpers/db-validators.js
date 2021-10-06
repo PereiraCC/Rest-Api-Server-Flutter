@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.allowableCollections = exports.existsAgentbyId = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
+exports.lenghtPassword = exports.allowableCollections = exports.existsAgentbyId = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
 const config_1 = __importDefault(require("../db/config"));
 // Reference the agents collection in database 
 const agentRef = config_1.default.collection('agents');
@@ -52,4 +52,10 @@ const allowableCollections = (collection = '', collections = []) => {
     return true;
 };
 exports.allowableCollections = allowableCollections;
+const lenghtPassword = (password) => __awaiter(void 0, void 0, void 0, function* () {
+    if (password.length < 6) {
+        throw new Error(`Error: Password must be longer than 6 characters`);
+    }
+});
+exports.lenghtPassword = lenghtPassword;
 //# sourceMappingURL=db-validators.js.map
