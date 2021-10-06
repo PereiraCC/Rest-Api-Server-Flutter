@@ -2,6 +2,7 @@ import db from '../db/config';
 
 // Reference the agents collection in database 
 const agentRef = db.collection('agents');
+const userRef = db.collection('users');
 
 export const inyectionSqlInputs = ( data : string) => {
 
@@ -20,6 +21,18 @@ export const existsIdentification = async (id : string) => {
     //     console.log(doc.data());
     // })
 
+    // check for documents
+    if( resp.docs.length > 0 ){
+        throw new Error('Error: The identification is already in the database');
+    }
+
+}
+
+export const existsIdentificationUser = async (id : string) => {
+
+    // Get data from database with id equal
+    const resp = await userRef.where('identification', '==', id).get();
+    
     // check for documents
     if( resp.docs.length > 0 ){
         throw new Error('Error: The identification is already in the database');

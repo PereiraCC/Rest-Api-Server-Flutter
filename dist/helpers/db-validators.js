@@ -12,10 +12,11 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lenghtPassword = exports.allowableCollections = exports.existsAgentbyId = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
+exports.lenghtPassword = exports.allowableCollections = exports.existsAgentbyId = exports.existsIdentificationUser = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
 const config_1 = __importDefault(require("../db/config"));
 // Reference the agents collection in database 
 const agentRef = config_1.default.collection('agents');
+const userRef = config_1.default.collection('users');
 const inyectionSqlInputs = (data) => {
     if (data.toUpperCase().includes('SELECT') || data.toUpperCase().includes('DELETE') ||
         data.toUpperCase().includes('UPDATE') || data.toUpperCase().includes('INSERT')) {
@@ -35,6 +36,15 @@ const existsIdentification = (id) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.existsIdentification = existsIdentification;
+const existsIdentificationUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get data from database with id equal
+    const resp = yield userRef.where('identification', '==', id).get();
+    // check for documents
+    if (resp.docs.length > 0) {
+        throw new Error('Error: The identification is already in the database');
+    }
+});
+exports.existsIdentificationUser = existsIdentificationUser;
 const existsAgentbyId = (id) => __awaiter(void 0, void 0, void 0, function* () {
     // Obtain all agents with id equal
     const resp = yield agentRef.where('identification', '==', id).get();
