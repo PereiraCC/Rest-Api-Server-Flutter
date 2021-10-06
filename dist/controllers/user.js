@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -16,10 +27,9 @@ exports.deleteUser = exports.putUser = exports.postUser = exports.getUserById = 
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const config_1 = __importDefault(require("../db/config"));
 const user_1 = __importDefault(require("../models/user"));
-// import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 // Reference to collection of agents in firebase
-const agentRef = config_1.default.collection('users');
-const getUsers = (req, res) => {
+const userRef = config_1.default.collection('users');
+const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         return res.status(200).json({
             msg: 'get all users'
@@ -31,7 +41,7 @@ const getUsers = (req, res) => {
             msg: 'Error: Get all users'
         });
     }
-};
+});
 exports.getUsers = getUsers;
 const getUserById = (req, res) => {
     try {
@@ -55,16 +65,17 @@ const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const salt = bcryptjs_1.default.genSaltSync();
         const encryptPass = bcryptjs_1.default.hashSync(password, salt);
         // Create new instance of agent class
-        const user = new user_1.default(identification, name, email, encryptPass, true);
+        const user = new user_1.default(identification, name, email, encryptPass, true, false);
         // Get JSON data
         const data = user.fromJson();
         // Add new agent in the database
-        const doc = yield agentRef.add(data);
+        const doc = yield userRef.add(data);
+        const { pass } = data, newUser = __rest(data, ["pass"]);
         // Send data
         res.status(201).json({
             ok: true,
             id_user: doc.id,
-            data
+            newUser
         });
     }
     catch (error) {

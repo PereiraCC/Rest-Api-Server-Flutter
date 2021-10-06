@@ -36,6 +36,7 @@ const existsIdentification = (id) => __awaiter(void 0, void 0, void 0, function*
     }
 });
 exports.existsIdentification = existsIdentification;
+// TODO: Refactor in two methods
 const existsIdentificationUser = (id) => __awaiter(void 0, void 0, void 0, function* () {
     // Get data from database with id equal
     const resp = yield userRef.where('identification', '==', id).get();

@@ -3,18 +3,20 @@ import bcryptjs from 'bcryptjs';
 
 import db from '../db/config';
 import User from "../models/user";
-// import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
+import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 
 // Reference to collection of agents in firebase
-const agentRef = db.collection('users');
+const userRef = db.collection('users');
 
-export const getUsers = (req : Request, res : Response) => {
+export const getUsers = async (req : Request, res : Response) => {
 
     try {
 
         return res.status(200).json({
             msg: 'get all users'
         });
+
+
 
     } catch (error) {
         console.log(`Error: ${error}`);
@@ -55,19 +57,20 @@ export const postUser = async (req : Request, res : Response) => {
         const encryptPass : string = bcryptjs.hashSync(password, salt)
         
         // Create new instance of agent class
-        const user = new User(identification, name, email, encryptPass, true);
+        const user : User = new User(identification, name, email, encryptPass, true, false);
 
         // Get JSON data
         const data = user.fromJson();
 
         // Add new agent in the database
-        const doc = await agentRef.add(data);
+        const doc = await userRef.add(data);
 
+        const {pass, ...newUser} = data;
         // Send data
         res.status(201).json({
             ok: true,
             id_user : doc.id,
-            data
+            newUser
         });
 
     } catch (error) {

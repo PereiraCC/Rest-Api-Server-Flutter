@@ -28,6 +28,7 @@ export const existsIdentification = async (id : string) => {
 
 }
 
+// TODO: Refactor in two methods
 export const existsIdentificationUser = async (id : string) => {
 
     // Get data from database with id equal
