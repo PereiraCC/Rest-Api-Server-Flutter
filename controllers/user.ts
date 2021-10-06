@@ -5,17 +5,35 @@ import db from '../db/config';
 import User from "../models/user";
 import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 
-// Reference to collection of agents in firebase
+// Reference to collection of users in firebase
 const userRef = db.collection('users');
 
 export const getUsers = async (req : Request, res : Response) => {
 
+    const { limit = 10, from = 1} = req.query;
+
     try {
 
-        // Get all users with status in true
-        const resp = await userRef.where('status', '==', true).get();
+        const data = await userRef
+            .orderBy("identification")
+            .limit(limit as number).get();
 
-        // Processing collection data
+        if(from as number > data.docs.length || data.docs.length == 0) {
+            return res.status(200).json({
+                ok: true,
+                total : 0,
+                documents: []
+            });
+        }
+
+        const fromNumber : number = from as number;
+
+        const resp = await userRef
+            .orderBy("identification")
+            .limit(limit as number)
+            .startAt(data.docs[fromNumber - 1])
+            .where('status', '==', true).get();
+
         const documents = returnDocsFirebase(resp);
 
         // Send data
@@ -24,7 +42,6 @@ export const getUsers = async (req : Request, res : Response) => {
             total : documents.length,
             documents
         });
-
 
     } catch (error) {
         console.log(`Error: ${error}`);

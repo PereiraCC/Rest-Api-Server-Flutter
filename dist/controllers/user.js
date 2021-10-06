@@ -28,13 +28,27 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const config_1 = __importDefault(require("../db/config"));
 const user_1 = __importDefault(require("../models/user"));
 const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
-// Reference to collection of agents in firebase
+// Reference to collection of users in firebase
 const userRef = config_1.default.collection('users');
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { limit = 10, from = 1 } = req.query;
     try {
-        // Get all users with status in true
-        const resp = yield userRef.where('status', '==', true).get();
-        // Processing collection data
+        const data = yield userRef
+            .orderBy("identification")
+            .limit(limit).get();
+        if (from > data.docs.length || data.docs.length == 0) {
+            return res.status(200).json({
+                ok: true,
+                total: 0,
+                documents: []
+            });
+        }
+        const fromNumber = from;
+        const resp = yield userRef
+            .orderBy("identification")
+            .limit(limit)
+            .startAt(data.docs[fromNumber - 1])
+            .where('status', '==', true).get();
         const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
         // Send data
         return res.status(200).json({
