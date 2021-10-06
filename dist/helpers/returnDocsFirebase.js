@@ -8,6 +8,7 @@ const returnDocsFirebase = (snapshot) => {
         // Get agent and delete the status propety
         const temp = snapchild.data();
         delete temp.status;
+        delete temp.pass;
         // Save agent in list
         documents.push(Object.assign({ id_agent: snapchild.id }, temp));
     });

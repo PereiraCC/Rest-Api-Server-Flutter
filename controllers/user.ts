@@ -12,10 +12,18 @@ export const getUsers = async (req : Request, res : Response) => {
 
     try {
 
-        return res.status(200).json({
-            msg: 'get all users'
-        });
+        // Get all users with status in true
+        const resp = await userRef.where('status', '==', true).get();
 
+        // Processing collection data
+        const documents = returnDocsFirebase(resp);
+
+        // Send data
+        return res.status(200).json({
+            ok: true,
+            total : documents.length,
+            documents
+        });
 
 
     } catch (error) {

@@ -27,12 +27,20 @@ exports.deleteUser = exports.putUser = exports.postUser = exports.getUserById = 
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const config_1 = __importDefault(require("../db/config"));
 const user_1 = __importDefault(require("../models/user"));
+const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
 // Reference to collection of agents in firebase
 const userRef = config_1.default.collection('users');
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        // Get all users with status in true
+        const resp = yield userRef.where('status', '==', true).get();
+        // Processing collection data
+        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
+        // Send data
         return res.status(200).json({
-            msg: 'get all users'
+            ok: true,
+            total: documents.length,
+            documents
         });
     }
     catch (error) {

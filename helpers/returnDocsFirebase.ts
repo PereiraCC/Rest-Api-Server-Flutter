@@ -11,6 +11,7 @@ export const returnDocsFirebase = ( snapshot : firebase.firestore.QuerySnapshot<
         // Get agent and delete the status propety
         const temp = snapchild.data();
         delete temp.status;
+        delete temp.pass;
 
         // Save agent in list
         documents.push({
