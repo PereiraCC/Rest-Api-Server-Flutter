@@ -2,8 +2,9 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 
-import agentRoutes from '../routes/agent';
+import agentRoutes  from '../routes/agent';
 import uploadRoutes from '../routes/uploads';
+import authRoutes   from '../routes/auth';
 
 
 class Server {
@@ -12,6 +13,7 @@ class Server {
     private app : Application;
     private port : string;
     private apiPaths = {
+        auth: '/api/auth',
         agents: '/api/agents',
         uploads: '/api/uploads'
     };
@@ -20,28 +22,12 @@ class Server {
         this.app  = express();
         this.port = process.env.PORT || '8082';
 
-        // connection to the database
-        // this.dbConnection();
-
         // Middlewares
         this.middlewares();
 
         // Set routes
         this.routes();
     }
-
-    // async dbConnection() {
-
-    //     try {
-            
-    //         // await db.authenticate();
-    //         // console.log('Database online')
-
-    //     } catch (error : any ) {
-    //         throw new Error( error );
-    //     }
-
-    // }
 
     middlewares() {
 
@@ -64,6 +50,7 @@ class Server {
 
     routes() {
         // Set agents route
+        this.app.use( this.apiPaths.auth,    authRoutes );
         this.app.use( this.apiPaths.agents,  agentRoutes );
         this.app.use( this.apiPaths.uploads, uploadRoutes );
     }

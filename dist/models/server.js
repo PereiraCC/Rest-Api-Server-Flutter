@@ -8,29 +8,21 @@ const cors_1 = __importDefault(require("cors"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const agent_1 = __importDefault(require("../routes/agent"));
 const uploads_1 = __importDefault(require("../routes/uploads"));
+const auth_1 = __importDefault(require("../routes/auth"));
 class Server {
     constructor() {
         this.apiPaths = {
+            auth: '/api/auth',
             agents: '/api/agents',
             uploads: '/api/uploads'
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8082';
-        // connection to the database
-        // this.dbConnection();
         // Middlewares
         this.middlewares();
         // Set routes
         this.routes();
     }
-    // async dbConnection() {
-    //     try {
-    //         // await db.authenticate();
-    //         // console.log('Database online')
-    //     } catch (error : any ) {
-    //         throw new Error( error );
-    //     }
-    // }
     middlewares() {
         // CORS
         this.app.use((0, cors_1.default)());
@@ -47,6 +39,7 @@ class Server {
     }
     routes() {
         // Set agents route
+        this.app.use(this.apiPaths.auth, auth_1.default);
         this.app.use(this.apiPaths.agents, agent_1.default);
         this.app.use(this.apiPaths.uploads, uploads_1.default);
     }
