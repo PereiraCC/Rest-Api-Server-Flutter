@@ -2,9 +2,10 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 
-import agentRoutes  from '../routes/agent';
-import uploadRoutes from '../routes/uploads';
-import authRoutes   from '../routes/auth';
+import authRoute   from '../routes/auth';
+import agentRoute  from '../routes/agent';
+import userRoute   from '../routes/user';
+import uploadRoute from '../routes/uploads';
 
 
 class Server {
@@ -13,8 +14,9 @@ class Server {
     private app : Application;
     private port : string;
     private apiPaths = {
-        auth: '/api/auth',
-        agents: '/api/agents',
+        auth:    '/api/auth',
+        users:   '/api/users',
+        agents:  '/api/agents',
         uploads: '/api/uploads'
     };
 
@@ -50,9 +52,10 @@ class Server {
 
     routes() {
         // Set agents route
-        this.app.use( this.apiPaths.auth,    authRoutes );
-        this.app.use( this.apiPaths.agents,  agentRoutes );
-        this.app.use( this.apiPaths.uploads, uploadRoutes );
+        this.app.use( this.apiPaths.auth,    authRoute );
+        this.app.use( this.apiPaths.agents,  agentRoute );
+        this.app.use( this.apiPaths.users,   userRoute );
+        this.app.use( this.apiPaths.uploads, uploadRoute );
     }
 
     listen() {
