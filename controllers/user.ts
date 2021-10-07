@@ -176,12 +176,38 @@ export const putUser = async (req : Request, res : Response) => {
 
 }
 
-export const deleteUser = (req : Request, res : Response) => {
+export const deleteUser = async(req : Request, res : Response) => {
+
+    // Get id param
+    const { id } = req.params;
 
     try {
         
-        return res.status(200).json({
-            msg: 'delete a user'
+        // Obtain the identification document
+        let docRef = await getUser(id);
+
+        // Verification if there is an agent
+        if(!docRef?.exists){
+            return res.status(400).json({
+                msg: 'Error The identification is not already in the database'
+            }); 
+        }
+
+        // Update the document with status in false
+        await userRef.doc(docRef?.id).update({
+            status : false
+        });
+
+        // Obtain new data 
+        const resp = await userRef.where('status', '==', false)
+                                  .where('identification','==', id).get();
+
+        const documents = returnDocsFirebase(resp);
+
+        // Send data
+        res.json({
+            ok: true,
+            user : documents
         });
 
     } catch (error) {

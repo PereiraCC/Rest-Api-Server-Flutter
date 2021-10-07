@@ -36,8 +36,8 @@ router.put('/:id', [
 ], user_1.putUser);
 // Delete an agent (Status in false)
 router.delete('/:id', [
-    // check('id', 'The identification parameter must be numeric.').isNumeric(),
-    // check('id').custom(existsAgentbyId),
+    (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
+    (0, express_validator_1.check)('id').custom(db_validators_1.existsUserbyId),
     inputs_validation_1.fieldsValidation
 ], user_1.deleteUser);
 exports.default = router;

@@ -162,10 +162,30 @@ const putUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.putUser = putUser;
-const deleteUser = (req, res) => {
+const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get id param
+    const { id } = req.params;
     try {
-        return res.status(200).json({
-            msg: 'delete a user'
+        // Obtain the identification document
+        let docRef = yield (0, exports.getUser)(id);
+        // Verification if there is an agent
+        if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
+            return res.status(400).json({
+                msg: 'Error The identification is not already in the database'
+            });
+        }
+        // Update the document with status in false
+        yield userRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update({
+            status: false
+        });
+        // Obtain new data 
+        const resp = yield userRef.where('status', '==', false)
+            .where('identification', '==', id).get();
+        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
+        // Send data
+        res.json({
+            ok: true,
+            user: documents
         });
     }
     catch (error) {
@@ -174,7 +194,7 @@ const deleteUser = (req, res) => {
             msg: 'Error: delete a user'
         });
     }
-};
+});
 exports.deleteUser = deleteUser;
 const getUser = (id, status = true) => __awaiter(void 0, void 0, void 0, function* () {
     // Obtain all agents with status true / false (param) and id equal
