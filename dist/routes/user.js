@@ -13,7 +13,7 @@ const router = (0, express_1.Router)();
 router.get('/', user_1.getUsers);
 // Get a user by id
 router.get('/:id', [
-    // check('id', 'The identification parameter must be numeric.').isNumeric(),
+    (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
     inputs_validation_1.fieldsValidation
 ], user_1.getUserById);
 // Create new user

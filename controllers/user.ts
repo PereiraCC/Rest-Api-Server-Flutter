@@ -52,12 +52,30 @@ export const getUsers = async (req : Request, res : Response) => {
 
 }
 
-export const getUserById = (req : Request, res : Response) => {
+export const getUserById = async (req : Request, res : Response) => {
 
     try {
         
+        const { id } = req.params;
+
+        // Get all users with status true and id equal
+        const resp = await userRef.where('status', '==', true)
+                                   .where('identification','==', id).get();
+
+        // Verification if there are documents
+        if( resp.docs.length == 0 ){
+            return res.status(404).json({
+                msg: 'User with that ID not found in the database.'
+            });
+        }
+
+        // Processing collection data
+        const documents = returnDocsFirebase(resp);
+
+        // Send data
         return res.status(200).json({
-            msg: 'get a user'
+            ok: true,
+            documents
         });
 
     } catch (error) {

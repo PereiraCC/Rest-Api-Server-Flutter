@@ -15,7 +15,7 @@ router.get('/', getUsers);
 
 // Get a user by id
 router.get('/:id', [
-    // check('id', 'The identification parameter must be numeric.').isNumeric(),
+    check('id', 'The identification parameter must be numeric.').isNumeric(),
     fieldsValidation
 ], getUserById );
 

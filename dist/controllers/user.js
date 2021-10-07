@@ -65,10 +65,24 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.getUsers = getUsers;
-const getUserById = (req, res) => {
+const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { id } = req.params;
+        // Get all users with status true and id equal
+        const resp = yield userRef.where('status', '==', true)
+            .where('identification', '==', id).get();
+        // Verification if there are documents
+        if (resp.docs.length == 0) {
+            return res.status(404).json({
+                msg: 'User with that ID not found in the database.'
+            });
+        }
+        // Processing collection data
+        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
+        // Send data
         return res.status(200).json({
-            msg: 'get a user'
+            ok: true,
+            documents
         });
     }
     catch (error) {
@@ -77,7 +91,7 @@ const getUserById = (req, res) => {
             msg: 'Error: Get a user'
         });
     }
-};
+});
 exports.getUserById = getUserById;
 const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get data from body
