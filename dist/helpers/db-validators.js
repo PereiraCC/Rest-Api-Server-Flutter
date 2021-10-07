@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lenghtPassword = exports.allowableCollections = exports.existsAgentbyId = exports.existsIdentificationUser = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
+exports.lenghtPassword = exports.allowableCollections = exports.existsUserbyId = exports.existsAgentbyId = exports.existsIdentificationUser = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
 const config_1 = __importDefault(require("../db/config"));
 // Reference the agents collection in database 
 const agentRef = config_1.default.collection('agents');
@@ -55,6 +55,15 @@ const existsAgentbyId = (id) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.existsAgentbyId = existsAgentbyId;
+const existsUserbyId = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    // Obtain all users with id equal
+    const resp = yield userRef.where('identification', '==', id).get();
+    // Check for documents
+    if (resp.docs.length == 0) {
+        throw new Error('Error: The identification is not already in the database');
+    }
+});
+exports.existsUserbyId = existsUserbyId;
 const allowableCollections = (collection = '', collections = []) => {
     const included = collections.includes(collection);
     if (!included) {

@@ -53,6 +53,18 @@ export const existsAgentbyId = async (id : string) => {
 
 }
 
+export const existsUserbyId = async (id : string) => {
+
+    // Obtain all users with id equal
+    const resp = await userRef.where('identification', '==', id).get();
+
+    // Check for documents
+    if( resp.docs.length == 0 ){
+        throw new Error('Error: The identification is not already in the database');
+    }
+
+}
+
 export const allowableCollections = ( collection : String = '', collections : Array<String> = []) => {
 
     const included = collections.includes( collection );
