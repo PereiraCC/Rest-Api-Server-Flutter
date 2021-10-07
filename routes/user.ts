@@ -4,7 +4,7 @@ import { check } from "express-validator";
 
 // Imports od controller, helpers and middlewares
 import { getUsers, getUserById, postUser, putUser, deleteUser } from "../controllers/user";
-import { existsIdentificationUser, lenghtPassword } from "../helpers/db-validators";
+import { existsIdentificationUser, lenghtPassword, existsUserbyId } from '../helpers/db-validators';
 import { fieldsValidation } from "../middlewares/inputs-validation";
 
 // Instance of router
@@ -34,8 +34,8 @@ router.post('/', [
 
 // Update a user
 router.put('/:id', [
-    // check('id', 'The identification parameter must be numeric.').isNumeric(),
-    // check('id').custom(existsAgentbyId),
+    check('id', 'The identification parameter must be numeric.').isNumeric(),
+    check('id').custom( existsUserbyId ),
     fieldsValidation
 ], putUser );
 

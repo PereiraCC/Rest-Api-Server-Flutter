@@ -23,7 +23,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteUser = exports.putUser = exports.postUser = exports.getUserById = exports.getUsers = void 0;
+exports.getUser = exports.deleteUser = exports.putUser = exports.postUser = exports.getUserById = exports.getUsers = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const config_1 = __importDefault(require("../db/config"));
 const user_1 = __importDefault(require("../models/user"));
@@ -122,10 +122,36 @@ const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.postUser = postUser;
-const putUser = (req, res) => {
+const putUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get id param and data
+    const { id } = req.params;
+    const _a = req.body, { password, google } = _a, data = __rest(_a, ["password", "google"]);
     try {
-        return res.status(200).json({
-            msg: 'update a user'
+        // Obtain the identification document
+        let docRef = yield (0, exports.getUser)(id);
+        // Verification if there is an agent
+        if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
+            return res.status(400).json({
+                msg: 'Error The identification is not already in the database'
+            });
+        }
+        if (password) {
+            // Encriptar la contraseña
+            const salt = bcryptjs_1.default.genSaltSync();
+            data.pass = bcryptjs_1.default.hashSync(password, salt);
+        }
+        // Fields: identification and status 
+        data.identification = docRef === null || docRef === void 0 ? void 0 : docRef.data().identification;
+        data.status = true;
+        // Update the document with new data
+        yield userRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update(data);
+        const resp = yield userRef.where('status', '==', true)
+            .where('identification', '==', id).get();
+        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
+        // Send data
+        res.json({
+            ok: true,
+            user: documents
         });
     }
     catch (error) {
@@ -134,7 +160,7 @@ const putUser = (req, res) => {
             msg: 'Error: update a user'
         });
     }
-};
+});
 exports.putUser = putUser;
 const deleteUser = (req, res) => {
     try {
@@ -150,4 +176,17 @@ const deleteUser = (req, res) => {
     }
 };
 exports.deleteUser = deleteUser;
+const getUser = (id, status = true) => __awaiter(void 0, void 0, void 0, function* () {
+    // Obtain all agents with status true / false (param) and id equal
+    const resp = yield userRef.where('status', '==', status)
+        .where('identification', '==', id).get();
+    // From the list obtain documento with id equal
+    const docRef = resp.docs.find((doc) => {
+        if (doc.data().identification === id) {
+            return doc;
+        }
+    });
+    return docRef;
+});
+exports.getUser = getUser;
 //# sourceMappingURL=user.js.map

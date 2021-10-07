@@ -88,7 +88,7 @@ export const getUserById = async (req : Request, res : Response) => {
 }
 
 export const postUser = async (req : Request, res : Response) => {
-
+    
     // Get data from body
     const {identification , name , email, password } 
         : {identification : string, name : string, email : string, password : string} = req.body;
@@ -125,12 +125,46 @@ export const postUser = async (req : Request, res : Response) => {
 
 }
 
-export const putUser = (req : Request, res : Response) => {
+export const putUser = async (req : Request, res : Response) => {
+    
+    // Get id param and data
+    const { id } = req.params;
+    const { password, google, ...data } = req.body;
 
     try {
-        
-        return res.status(200).json({
-            msg: 'update a user'
+
+        // Obtain the identification document
+        let docRef = await getUser(id);
+
+        // Verification if there is an agent
+        if(!docRef?.exists){
+            return res.status(400).json({
+                msg: 'Error The identification is not already in the database'
+            }); 
+        }
+
+        if( password ) {
+            // Encriptar la contraseña
+            const salt = bcryptjs.genSaltSync();
+            data.pass = bcryptjs.hashSync( password,  salt);
+        }
+
+        // Fields: identification and status 
+        data.identification = docRef?.data().identification;
+        data.status = true;
+
+        // Update the document with new data
+        await userRef.doc(docRef?.id).update(data);
+
+        const resp = await userRef.where('status', '==', true)
+                                   .where('identification','==', id).get();
+
+        const documents = returnDocsFirebase(resp);
+
+        // Send data
+        res.json({
+            ok: true,
+            user : documents
         });
 
     } catch (error) {
@@ -156,5 +190,22 @@ export const deleteUser = (req : Request, res : Response) => {
             msg: 'Error: delete a user'
         });
     }
+
+}
+
+export const getUser = async (id : String, status = true) => {
+    
+    // Obtain all agents with status true / false (param) and id equal
+    const resp = await userRef.where('status', '==', status)
+                                   .where('identification','==', id).get();
+
+    // From the list obtain documento with id equal
+    const docRef = resp.docs.find((doc) => {
+        if(doc.data().identification === id){
+            return doc;
+        }
+    });
+
+    return docRef;
 
 }
