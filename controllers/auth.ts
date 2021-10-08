@@ -1,16 +1,47 @@
 import { Request, Response } from "express";
+import bcryptjs from 'bcryptjs';
 
+import db from '../db/config';
+import { generateJWT } from "../helpers/generate-jwt";
+import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
+
+// Reference to collection of users in firebase
+const userRef = db.collection('users');
 
 export const login = async (req : Request, res: Response) => {
 
+    const { email, password } = req.body;
+
     try {
         
-        const { email, password } = req.body;
+         // Get all users with status true and email equal
+        const resp = await userRef.where('status', '==', true)
+                                  .where('email','==', email).get();
+
+        // Verification if there are documents
+        if( resp.docs.length == 0 ){
+            return res.status(404).json({
+                msg: 'User not found in the database.'
+            });
+        }
+
+        const { pass, identification } = resp.docs[0].data(); 
+        const validPassword : boolean = bcryptjs.compareSync( password, pass);
+        if( !validPassword ){
+            return res.status(400).json({
+                msg: 'Incorrect password'
+            });
+        }
+
+        // create JWT
+        const token = await generateJWT( identification );
+
+        const documents = returnDocsFirebase( resp );
 
         res.json({
-            msg: 'login method',
-            email, 
-            password
+            ok: true,
+            token,
+            documents
         });
 
     } catch (error) {
