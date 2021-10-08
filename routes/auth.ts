@@ -19,6 +19,9 @@ router.post('/login', [
 ], login );
 
 // sing in Google
-router.post('/google', googleSingIn);
+router.post('/google', [
+    check('id_token', 'The google token is required').not().isEmpty(),
+    fieldsValidation
+], googleSingIn);
 
 export default router;

@@ -17,6 +17,9 @@ router.post('/login', [
     inputs_validation_1.fieldsValidation
 ], auth_1.login);
 // sing in Google
-router.post('/google', auth_1.googleSingIn);
+router.post('/google', [
+    (0, express_validator_1.check)('id_token', 'The google token is required').not().isEmpty(),
+    inputs_validation_1.fieldsValidation
+], auth_1.googleSingIn);
 exports.default = router;
 //# sourceMappingURL=auth.js.map

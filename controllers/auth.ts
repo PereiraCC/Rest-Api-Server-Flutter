@@ -2,8 +2,10 @@ import { Request, Response } from "express";
 import bcryptjs from 'bcryptjs';
 
 import db from '../db/config';
-import { generateJWT } from "../helpers/generate-jwt";
+import { generateJWT } from '../helpers/generate-jwt';
 import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
+import { verify } from "../helpers/google-verify";
+import User from "../models/user";
 
 // Reference to collection of users in firebase
 const userRef = db.collection('users');
@@ -55,16 +57,59 @@ export const login = async (req : Request, res: Response) => {
 
 export const googleSingIn = async (req : Request, res: Response) => {
 
+    const { id_token } = req.body;
+
     try {
-        
-        res.json({
-            msg: 'googleSingIn method'
+            
+        const {name, picture, email} = await verify(id_token);
+
+         // Get all users with status true and email equal
+         const resp = await userRef.where('email','==', email).get();
+
+
+        // Verification if there are documents
+        if( resp.docs.length == 0 ){
+            // TODO: picture add
+            // Create new instance of agent class
+            const user : User = new User('google-id', name || '', email || '', 'no-pass', true, true);
+
+            // Get JSON data
+            const data = user.fromJson();
+
+            // Add new agent in the database
+            const doc = await userRef.add(data);
+
+            const {pass, status, ...newUser} = data;
+
+            const token = await generateJWT( id_token );
+
+            // Send data
+            return res.status(201).json({
+                ok: true,
+                id_user : doc.id,
+                newUser,
+                token
+            });
+        }
+
+        if( !resp.docs[0].data().status){
+            return res.status(401).json({
+                msg: 'User blocked',
+            });
+        }
+
+        // Generar el JWT
+        const token = await generateJWT( id_token );
+
+        return res.json({
+            msg :'ok',
+            token,
         });
 
     } catch (error) {
         console.log(`Error in login: ${error}`);
         return res.status(500).json({
-            msg: 'Error'
+            msg: 'Error google sing in method'
         })
     }
 
