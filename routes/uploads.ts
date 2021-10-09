@@ -15,8 +15,8 @@ const router = Router();
 router.put('/:collection/:id', [
     fileValidationUpload,
     check('id', 'The id parameter is not numeric').isNumeric(),
-    check('id').custom(existsAgentbyId),
-    check('collection').custom( c => allowableCollections(c, ['agents'])),
+    // check('id').custom(existsAgentbyId),
+    check('collection').custom( c => allowableCollections(c, ['agents', 'users'])),
     fieldsValidation
 ], uploadFile);
 
