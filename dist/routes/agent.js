@@ -7,17 +7,20 @@ const express_validator_1 = require("express-validator");
 const agent_1 = require("../controllers/agent");
 const db_validators_1 = require("../helpers/db-validators");
 const inputs_validation_1 = require("../middlewares/inputs-validation");
+const validation_jwt_1 = require("../middlewares/validation-jwt");
 // Instance of router
 const router = (0, express_1.Router)();
 // Get all agents
 router.get('/', agent_1.getAgents);
 // Get an agent by id
 router.get('/:id', [
+    validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
     inputs_validation_1.fieldsValidation
 ], agent_1.getAgentById);
 // Create new agent
 router.post('/', [
+    validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('identification', 'The identification field is required.').not().isEmpty(),
     (0, express_validator_1.check)('identification', 'The identification field must be numeric').isNumeric(),
     // check('identification').custom(inyectionSqlInputs),
@@ -33,12 +36,14 @@ router.post('/', [
 ], agent_1.postAgent);
 // Update an agent
 router.put('/:id', [
+    validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
     (0, express_validator_1.check)('id').custom(db_validators_1.existsAgentbyId),
     inputs_validation_1.fieldsValidation
 ], agent_1.putAgent);
 // Delete an agent (Status in false)
 router.delete('/:id', [
+    validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
     (0, express_validator_1.check)('id').custom(db_validators_1.existsAgentbyId),
     inputs_validation_1.fieldsValidation

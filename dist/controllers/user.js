@@ -31,6 +31,7 @@ const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
 // Reference to collection of users in firebase
 const userRef = config_1.default.collection('users');
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //TODO: Refactor here
     const { limit = 10, from = 1 } = req.query;
     try {
         const data = yield userRef
@@ -67,6 +68,7 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUsers = getUsers;
 const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        //TODO: Refactor here
         const { id } = req.params;
         // Get all users with status true and id equal
         const resp = yield userRef.where('status', '==', true)
@@ -94,6 +96,7 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getUserById = getUserById;
 const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //TODO: Refactor here
     // Get data from body
     const { identification, name, email, password } = req.body;
     try {
@@ -123,6 +126,7 @@ const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.postUser = postUser;
 const putUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //TODO: Refactor here
     // Get id param and data
     const { id } = req.params;
     const _a = req.body, { password, google } = _a, data = __rest(_a, ["password", "google"]);
@@ -163,6 +167,7 @@ const putUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.putUser = putUser;
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    //TODO: Refactor here
     // Get id param
     const { id } = req.params;
     try {

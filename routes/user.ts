@@ -6,6 +6,7 @@ import { check } from "express-validator";
 import { getUsers, getUserById, postUser, putUser, deleteUser } from "../controllers/user";
 import { existsIdentificationUser, lenghtPassword, existsUserbyId } from '../helpers/db-validators';
 import { fieldsValidation } from "../middlewares/inputs-validation";
+import { validationJWT } from '../middlewares/validation-jwt';
 
 // Instance of router
 const router = Router();
@@ -15,6 +16,7 @@ router.get('/', getUsers);
 
 // Get a user by id
 router.get('/:id', [
+    validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
     fieldsValidation
 ], getUserById );
@@ -34,6 +36,7 @@ router.post('/', [
 
 // Update a user
 router.put('/:id', [
+    validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
     check('id').custom( existsUserbyId ),
     fieldsValidation
@@ -41,6 +44,7 @@ router.put('/:id', [
 
 // Delete an agent (Status in false)
 router.delete('/:id', [
+    validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
     check('id').custom( existsUserbyId ),
     fieldsValidation

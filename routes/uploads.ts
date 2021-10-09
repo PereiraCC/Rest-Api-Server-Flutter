@@ -6,16 +6,17 @@ import { check } from "express-validator";
 import { uploadFile } from "../controllers/uploads";
 import { fileValidationUpload } from "../middlewares/files-validation";
 import { fieldsValidation } from "../middlewares/inputs-validation";
-import { allowableCollections, existsAgentbyId } from "../helpers/db-validators";
+import { allowableCollections } from "../helpers/db-validators";
+import { validationJWT } from "../middlewares/validation-jwt";
 
 // Instance of router
 const router = Router();
 
 // upload profile image of agents
 router.put('/:collection/:id', [
+    validationJWT,
     fileValidationUpload,
     check('id', 'The id parameter is not numeric').isNumeric(),
-    // check('id').custom(existsAgentbyId),
     check('collection').custom( c => allowableCollections(c, ['agents', 'users'])),
     fieldsValidation
 ], uploadFile);

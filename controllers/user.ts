@@ -10,6 +10,7 @@ const userRef = db.collection('users');
 
 export const getUsers = async (req : Request, res : Response) => {
 
+    //TODO: Refactor here
     const { limit = 10, from = 1} = req.query;
 
     try {
@@ -55,7 +56,7 @@ export const getUsers = async (req : Request, res : Response) => {
 export const getUserById = async (req : Request, res : Response) => {
 
     try {
-        
+        //TODO: Refactor here
         const { id } = req.params;
 
         // Get all users with status true and id equal
@@ -88,7 +89,7 @@ export const getUserById = async (req : Request, res : Response) => {
 }
 
 export const postUser = async (req : Request, res : Response) => {
-    
+    //TODO: Refactor here
     // Get data from body
     const {identification , name , email, password } 
         : {identification : string, name : string, email : string, password : string} = req.body;
@@ -126,7 +127,7 @@ export const postUser = async (req : Request, res : Response) => {
 }
 
 export const putUser = async (req : Request, res : Response) => {
-    
+    //TODO: Refactor here
     // Get id param and data
     const { id } = req.params;
     const { password, google, ...data } = req.body;
@@ -177,7 +178,7 @@ export const putUser = async (req : Request, res : Response) => {
 }
 
 export const deleteUser = async(req : Request, res : Response) => {
-
+    //TODO: Refactor here
     // Get id param
     const { id } = req.params;
 

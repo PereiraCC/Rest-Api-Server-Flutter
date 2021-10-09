@@ -6,6 +6,7 @@ import { check } from "express-validator";
 import { deleteAgent, getAgentById, getAgents, postAgent, putAgent } from "../controllers/agent";
 import { existsAgentbyId, existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
 import { fieldsValidation } from "../middlewares/inputs-validation";
+import { validationJWT } from "../middlewares/validation-jwt";
 
 // Instance of router
 const router = Router();
@@ -15,12 +16,14 @@ router.get('/', getAgents);
 
 // Get an agent by id
 router.get('/:id', [
+    validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
     fieldsValidation
 ], getAgentById );
 
 // Create new agent
 router.post('/', [
+    validationJWT,
     check('identification','The identification field is required.').not().isEmpty(),
     check('identification', 'The identification field must be numeric').isNumeric(),
     // check('identification').custom(inyectionSqlInputs),
@@ -37,6 +40,7 @@ router.post('/', [
 
 // Update an agent
 router.put('/:id', [
+    validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
     check('id').custom(existsAgentbyId),
     fieldsValidation
@@ -44,6 +48,7 @@ router.put('/:id', [
 
 // Delete an agent (Status in false)
 router.delete('/:id', [
+    validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
     check('id').custom(existsAgentbyId),
     fieldsValidation
