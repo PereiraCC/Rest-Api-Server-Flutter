@@ -73,29 +73,19 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.login = login;
 const googleSingIn = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get id token google
     const { id_token } = req.body;
     try {
+        // Get user google name, picture, email
         const { name, picture, email } = yield (0, google_verify_1.verify)(id_token);
-        // Get all users with status true and email equal
+        // Get all users with email equal
         const resp = yield userRef.where('email', '==', email).get();
         // Verification if there are documents
         if (resp.docs.length == 0) {
-            // Create new instance of agent class
-            const user = new user_1.default('google-id', name || '', email || '', 'no-pass', true, true, picture);
-            // Get JSON data
-            const data = user.fromJson();
-            // Add new agent in the database
-            const doc = yield userRef.add(data);
-            const { pass, status } = data, newUser = __rest(data, ["pass", "status"]);
-            const token = yield (0, generate_jwt_1.generateJWT)(id_token);
-            // Send data
-            return res.status(201).json({
-                ok: true,
-                id_user: doc.id,
-                newUser,
-                token
-            });
+            const resp = yield createNewUserGoogle(name || '', email || '', picture || '', id_token);
+            return res.status(201).json(resp);
         }
+        // Verification user blocked
         if (!resp.docs[0].data().status) {
             return res.status(401).json({
                 msg: 'User blocked',
@@ -103,6 +93,7 @@ const googleSingIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         }
         // Generar el JWT
         const token = yield (0, generate_jwt_1.generateJWT)(id_token);
+        // Send data
         return res.json({
             msg: 'ok',
             token,
@@ -116,4 +107,23 @@ const googleSingIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.googleSingIn = googleSingIn;
+const createNewUserGoogle = (name, email, picture, id_token) => __awaiter(void 0, void 0, void 0, function* () {
+    // Create new instance of agent class
+    const user = new user_1.default('google-id', name || '', email || '', 'no-pass', true, true, picture);
+    // Get JSON data
+    const data = user.fromJson();
+    // Add new user in the database
+    const doc = yield userRef.add(data);
+    // Get new user data without pass and status
+    const { pass, status } = data, newUser = __rest(data, ["pass", "status"]);
+    // Create JWT
+    const token = yield (0, generate_jwt_1.generateJWT)(id_token);
+    // Send data
+    return {
+        ok: true,
+        id_user: doc.id,
+        newUser,
+        token
+    };
+});
 //# sourceMappingURL=auth.js.map
