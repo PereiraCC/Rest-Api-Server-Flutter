@@ -1,5 +1,4 @@
 import { Request, Response } from "express";
-import bcryptjs from 'bcryptjs';
 
 import db from '../db/config';
 import User from "../models/user";
@@ -173,7 +172,7 @@ export const putUser = async (req : Request, res : Response) => {
 }
 
 export const deleteUser = async(req : Request, res : Response) => {
-    //TODO: Refactor here
+    
     // Get id param
     const { id } = req.params;
 
@@ -182,7 +181,7 @@ export const deleteUser = async(req : Request, res : Response) => {
         // Obtain the identification document
         let docRef = await getUser(id);
 
-        // Verification if there is an agent
+        // Verification if there is a user
         if(!docRef?.exists){
             return res.status(400).json({
                 msg: 'Error The identification is not already in the database'
@@ -198,12 +197,10 @@ export const deleteUser = async(req : Request, res : Response) => {
         const resp = await userRef.where('status', '==', false)
                                   .where('identification','==', id).get();
 
-        const documents = returnDocsFirebase(resp);
-
         // Send data
         res.json({
             ok: true,
-            user : documents
+            user : returnDocsFirebase(resp)
         });
 
     } catch (error) {

@@ -163,13 +163,12 @@ const putUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.putUser = putUser;
 const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //TODO: Refactor here
     // Get id param
     const { id } = req.params;
     try {
         // Obtain the identification document
         let docRef = yield (0, exports.getUser)(id);
-        // Verification if there is an agent
+        // Verification if there is a user
         if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
             return res.status(400).json({
                 msg: 'Error The identification is not already in the database'
@@ -182,11 +181,10 @@ const deleteUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         // Obtain new data 
         const resp = yield userRef.where('status', '==', false)
             .where('identification', '==', id).get();
-        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
         // Send data
         res.json({
             ok: true,
-            user: documents
+            user: (0, returnDocsFirebase_1.returnDocsFirebase)(resp)
         });
     }
     catch (error) {
