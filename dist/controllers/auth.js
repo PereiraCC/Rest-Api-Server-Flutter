@@ -76,9 +76,8 @@ const googleSingIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         const resp = yield userRef.where('email', '==', email).get();
         // Verification if there are documents
         if (resp.docs.length == 0) {
-            // TODO: picture add
             // Create new instance of agent class
-            const user = new user_1.default('google-id', name || '', email || '', 'no-pass', true, true);
+            const user = new user_1.default('google-id', name || '', email || '', 'no-pass', true, true, picture);
             // Get JSON data
             const data = user.fromJson();
             // Add new agent in the database

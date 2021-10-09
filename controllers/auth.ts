@@ -69,9 +69,8 @@ export const googleSingIn = async (req : Request, res: Response) => {
 
         // Verification if there are documents
         if( resp.docs.length == 0 ){
-            // TODO: picture add
             // Create new instance of agent class
-            const user : User = new User('google-id', name || '', email || '', 'no-pass', true, true);
+            const user : User = new User('google-id', name || '', email || '', 'no-pass', true, true, picture);
 
             // Get JSON data
             const data = user.fromJson();
