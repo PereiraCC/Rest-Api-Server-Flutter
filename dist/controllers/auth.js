@@ -33,6 +33,7 @@ const user_1 = __importDefault(require("../models/user"));
 // Reference to collection of users in firebase
 const userRef = config_1.default.collection('users');
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    // Get data from body
     const { email, password } = req.body;
     try {
         // Get all users with status true and email equal
@@ -44,20 +45,23 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 msg: 'User not found in the database.'
             });
         }
+        // Get user pass and identification
         const { pass, identification } = resp.docs[0].data();
+        // Decrypt password
         const validPassword = bcryptjs_1.default.compareSync(password, pass);
+        // Verification if correct password
         if (!validPassword) {
             return res.status(400).json({
                 msg: 'Incorrect password'
             });
         }
-        // create JWT
+        // create JWT (Json Web Token)
         const token = yield (0, generate_jwt_1.generateJWT)(identification);
-        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
+        // Send data
         res.json({
             ok: true,
             token,
-            documents
+            documents: (0, returnDocsFirebase_1.returnDocsFirebase)(resp)
         });
     }
     catch (error) {

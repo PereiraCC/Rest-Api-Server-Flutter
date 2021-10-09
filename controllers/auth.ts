@@ -12,11 +12,12 @@ const userRef = db.collection('users');
 
 export const login = async (req : Request, res: Response) => {
 
+    // Get data from body
     const { email, password } = req.body;
 
     try {
         
-         // Get all users with status true and email equal
+        // Get all users with status true and email equal
         const resp = await userRef.where('status', '==', true)
                                   .where('email','==', email).get();
 
@@ -27,23 +28,27 @@ export const login = async (req : Request, res: Response) => {
             });
         }
 
+        // Get user pass and identification
         const { pass, identification } = resp.docs[0].data(); 
+
+        // Decrypt password
         const validPassword : boolean = bcryptjs.compareSync( password, pass);
+
+        // Verification if correct password
         if( !validPassword ){
             return res.status(400).json({
                 msg: 'Incorrect password'
             });
         }
 
-        // create JWT
+        // create JWT (Json Web Token)
         const token = await generateJWT( identification );
 
-        const documents = returnDocsFirebase( resp );
-
+        // Send data
         res.json({
             ok: true,
             token,
-            documents
+            documents : returnDocsFirebase( resp )
         });
 
     } catch (error) {
@@ -65,7 +70,6 @@ export const googleSingIn = async (req : Request, res: Response) => {
 
          // Get all users with status true and email equal
          const resp = await userRef.where('email','==', email).get();
-
 
         // Verification if there are documents
         if( resp.docs.length == 0 ){
