@@ -4,7 +4,7 @@ import { check } from "express-validator";
 
 // Imports od controller, helpers and middlewares
 import { getUsers, getUserById, postUser, putUser, deleteUser } from "../controllers/user";
-import { existsIdentificationUser, lenghtPassword, existsUserbyId } from '../helpers/db-validators';
+import { existsIdentification, lenghtPassword, existsbyId } from '../helpers/db-validators';
 import { fieldsValidation } from "../middlewares/inputs-validation";
 import { validationJWT } from '../middlewares/validation-jwt';
 
@@ -25,7 +25,7 @@ router.get('/:id', [
 router.post('/', [
     check('identification','The identification field is required.').not().isEmpty(),
     check('identification', 'The identification field must be numeric').isNumeric(),
-    check('identification').custom( existsIdentificationUser ),
+    check('identification').custom( value => existsIdentification(value, 'users') ),
     check('name','The name field is required.').not().isEmpty(),
     check('email','The email field is required.').not().isEmpty(),
     check('email','The email field is invalid.').isEmail(),
@@ -38,7 +38,7 @@ router.post('/', [
 router.put('/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
-    check('id').custom( existsUserbyId ),
+    check('id').custom( value => existsbyId(value, 'users') ),
     fieldsValidation
 ], putUser );
 
@@ -46,10 +46,8 @@ router.put('/:id', [
 router.delete('/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
-    check('id').custom( existsUserbyId ),
+    check('id').custom( value => existsbyId(value, 'users') ),
     fieldsValidation
 ], deleteUser );
-
-
 
 export default router;

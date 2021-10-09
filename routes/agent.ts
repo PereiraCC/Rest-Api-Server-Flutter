@@ -4,7 +4,7 @@ import { check } from "express-validator";
 
 // Imports od controller, helpers and middlewares
 import { deleteAgent, getAgentById, getAgents, postAgent, putAgent } from "../controllers/agent";
-import { existsAgentbyId, existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
+import { existsbyId, existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
 import { fieldsValidation } from "../middlewares/inputs-validation";
 import { validationJWT } from "../middlewares/validation-jwt";
 
@@ -27,7 +27,7 @@ router.post('/', [
     check('identification','The identification field is required.').not().isEmpty(),
     check('identification', 'The identification field must be numeric').isNumeric(),
     // check('identification').custom(inyectionSqlInputs),
-    check('identification').custom(existsIdentification),
+    check('identification').custom( value => existsIdentification(value, 'agents')),
     check('name','The name field is required.').not().isEmpty(),
     // check('name').custom(inyectionSqlInputs),
     check('lastname','The last name field is required.').not().isEmpty(),
@@ -42,7 +42,7 @@ router.post('/', [
 router.put('/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
-    check('id').custom(existsAgentbyId),
+    check('id').custom(value => existsbyId(value, 'agents')),
     fieldsValidation
 ], putAgent );
 
@@ -50,7 +50,7 @@ router.put('/:id', [
 router.delete('/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
-    check('id').custom(existsAgentbyId),
+    check('id').custom(value => existsbyId(value, 'agents')),
     fieldsValidation
 ], deleteAgent );
 
