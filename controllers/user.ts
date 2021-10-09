@@ -124,7 +124,7 @@ export const postUser = async (req : Request, res : Response) => {
 }
 
 export const putUser = async (req : Request, res : Response) => {
-    //TODO: Refactor here
+
     // Get id param and data
     const { id } = req.params;
     const { password, google, ...data } = req.body;
@@ -134,7 +134,7 @@ export const putUser = async (req : Request, res : Response) => {
         // Obtain the identification document
         let docRef = await getUser(id);
 
-        // Verification if there is an agent
+        // Verification if there is a user
         if(!docRef?.exists){
             return res.status(400).json({
                 msg: 'Error The identification is not already in the database'
@@ -142,9 +142,8 @@ export const putUser = async (req : Request, res : Response) => {
         }
 
         if( password ) {
-            // Encriptar la contraseña
-            const salt = bcryptjs.genSaltSync();
-            data.pass = bcryptjs.hashSync( password,  salt);
+            // Encrypt password
+            data.pass = encryptPass(password);
         }
 
         // Fields: identification and status 
@@ -154,15 +153,14 @@ export const putUser = async (req : Request, res : Response) => {
         // Update the document with new data
         await userRef.doc(docRef?.id).update(data);
 
+        // Get new user data updated
         const resp = await userRef.where('status', '==', true)
                                    .where('identification','==', id).get();
-
-        const documents = returnDocsFirebase(resp);
 
         // Send data
         res.json({
             ok: true,
-            user : documents
+            user : returnDocsFirebase(resp)
         });
 
     } catch (error) {

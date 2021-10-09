@@ -24,7 +24,6 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.getUser = exports.deleteUser = exports.putUser = exports.postUser = exports.getUserById = exports.getUsers = void 0;
-const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const config_1 = __importDefault(require("../db/config"));
 const user_1 = __importDefault(require("../models/user"));
 const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
@@ -125,36 +124,34 @@ const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.postUser = postUser;
 const putUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //TODO: Refactor here
     // Get id param and data
     const { id } = req.params;
     const _a = req.body, { password, google } = _a, data = __rest(_a, ["password", "google"]);
     try {
         // Obtain the identification document
         let docRef = yield (0, exports.getUser)(id);
-        // Verification if there is an agent
+        // Verification if there is a user
         if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
             return res.status(400).json({
                 msg: 'Error The identification is not already in the database'
             });
         }
         if (password) {
-            // Encriptar la contraseña
-            const salt = bcryptjs_1.default.genSaltSync();
-            data.pass = bcryptjs_1.default.hashSync(password, salt);
+            // Encrypt password
+            data.pass = (0, encrypt_pass_1.encryptPass)(password);
         }
         // Fields: identification and status 
         data.identification = docRef === null || docRef === void 0 ? void 0 : docRef.data().identification;
         data.status = true;
         // Update the document with new data
         yield userRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update(data);
+        // Get new user data updated
         const resp = yield userRef.where('status', '==', true)
             .where('identification', '==', id).get();
-        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
         // Send data
         res.json({
             ok: true,
-            user: documents
+            user: (0, returnDocsFirebase_1.returnDocsFirebase)(resp)
         });
     }
     catch (error) {
