@@ -27,7 +27,6 @@ const validationJWT = (req, res, next) => __awaiter(void 0, void 0, void 0, func
     }
     try {
         const { uid } = jsonwebtoken_1.default.verify(token, process.env.SECRETORPRIVATEKEY);
-        // leer el usuario que corresponde al uid
         const resp = yield userRef.where('status', '==', true)
             .where('identification', '==', uid).get();
         if (resp.docs.length == 0) {

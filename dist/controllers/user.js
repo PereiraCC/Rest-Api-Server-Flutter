@@ -31,12 +31,14 @@ const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
 // Reference to collection of users in firebase
 const userRef = config_1.default.collection('users');
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //TODO: Refactor here
+    // Get params
     const { limit = 10, from = 1 } = req.query;
     try {
+        // Get all data to the limit
         const data = yield userRef
             .orderBy("identification")
             .limit(limit).get();
+        // Verification if docs
         if (from > data.docs.length || data.docs.length == 0) {
             return res.status(200).json({
                 ok: true,
@@ -44,18 +46,17 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
                 documents: []
             });
         }
-        const fromNumber = from;
+        // Get data with filters
         const resp = yield userRef
-            .orderBy("identification")
+            .orderBy('identification')
             .limit(limit)
-            .startAt(data.docs[fromNumber - 1])
+            .startAt(data.docs[from - 1])
             .where('status', '==', true).get();
-        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
         // Send data
         return res.status(200).json({
             ok: true,
-            total: documents.length,
-            documents
+            total: resp.docs.length,
+            documents: (0, returnDocsFirebase_1.returnDocsFirebase)(resp)
         });
     }
     catch (error) {

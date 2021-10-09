@@ -10,15 +10,17 @@ const userRef = db.collection('users');
 
 export const getUsers = async (req : Request, res : Response) => {
 
-    //TODO: Refactor here
+    // Get params
     const { limit = 10, from = 1} = req.query;
 
     try {
 
+        // Get all data to the limit
         const data = await userRef
             .orderBy("identification")
             .limit(limit as number).get();
 
+        // Verification if docs
         if(from as number > data.docs.length || data.docs.length == 0) {
             return res.status(200).json({
                 ok: true,
@@ -27,21 +29,18 @@ export const getUsers = async (req : Request, res : Response) => {
             });
         }
 
-        const fromNumber : number = from as number;
-
+        // Get data with filters
         const resp = await userRef
-            .orderBy("identification")
+            .orderBy('identification')
             .limit(limit as number)
-            .startAt(data.docs[fromNumber - 1])
+            .startAt(data.docs[from as number - 1])
             .where('status', '==', true).get();
-
-        const documents = returnDocsFirebase(resp);
 
         // Send data
         return res.status(200).json({
             ok: true,
-            total : documents.length,
-            documents
+            total : resp.docs.length,
+            documents : returnDocsFirebase(resp)
         });
 
     } catch (error) {
@@ -50,7 +49,6 @@ export const getUsers = async (req : Request, res : Response) => {
             msg: 'Error: Get all users'
         });
     }
-
 }
 
 export const getUserById = async (req : Request, res : Response) => {

@@ -20,7 +20,6 @@ router.get('/:id', [
 ], user_1.getUserById);
 // Create new user
 router.post('/', [
-    validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('identification', 'The identification field is required.').not().isEmpty(),
     (0, express_validator_1.check)('identification', 'The identification field must be numeric').isNumeric(),
     (0, express_validator_1.check)('identification').custom(db_validators_1.existsIdentificationUser),
@@ -33,12 +32,14 @@ router.post('/', [
 ], user_1.postUser);
 // Update a user
 router.put('/:id', [
+    validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
     (0, express_validator_1.check)('id').custom(db_validators_1.existsUserbyId),
     inputs_validation_1.fieldsValidation
 ], user_1.putUser);
 // Delete an agent (Status in false)
 router.delete('/:id', [
+    validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
     (0, express_validator_1.check)('id').custom(db_validators_1.existsUserbyId),
     inputs_validation_1.fieldsValidation
