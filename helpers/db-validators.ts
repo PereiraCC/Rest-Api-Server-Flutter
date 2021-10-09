@@ -1,8 +1,5 @@
 import db from '../db/config';
 
-// Reference the agents collection in database 
-const agentRef = db.collection('agents');
-const userRef = db.collection('users');
 
 export const inyectionSqlInputs = ( data : string) => {
 
@@ -12,14 +9,13 @@ export const inyectionSqlInputs = ( data : string) => {
         }
 }
 
-export const existsIdentification = async (id : string) => {
+export const existsIdentification = async (id : string, collection : string) => {
+
+    const documRef = db.collection(collection); 
 
     // Get data from database with id equal
-    const resp = await agentRef.where('identification', '==', id).get();
+    const resp = await documRef.where('identification', '==', id).get();
     
-    // resp.docs.forEach((doc) => {
-    //     console.log(doc.data());
-    // })
 
     // check for documents
     if( resp.docs.length > 0 ){
@@ -28,35 +24,12 @@ export const existsIdentification = async (id : string) => {
 
 }
 
-// TODO: Refactor in two methods
-export const existsIdentificationUser = async (id : string) => {
+export const existsbyId = async (id : string, collection : string) => {
 
-    // Get data from database with id equal
-    const resp = await userRef.where('identification', '==', id).get();
-    
-    // check for documents
-    if( resp.docs.length > 0 ){
-        throw new Error('Error: The identification is already in the database');
-    }
-
-}
-
-export const existsAgentbyId = async (id : string) => {
+    const documRef = db.collection(collection);
 
     // Obtain all agents with id equal
-    const resp = await agentRef.where('identification', '==', id).get();
-
-    // Check for documents
-    if( resp.docs.length == 0 ){
-        throw new Error('Error: The identification is not already in the database');
-    }
-
-}
-
-export const existsUserbyId = async (id : string) => {
-
-    // Obtain all users with id equal
-    const resp = await userRef.where('identification', '==', id).get();
+    const resp = await documRef.where('identification', '==', id).get();
 
     // Check for documents
     if( resp.docs.length == 0 ){
