@@ -4,6 +4,7 @@ import bcryptjs from 'bcryptjs';
 import db from '../db/config';
 import User from "../models/user";
 import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
+import { encryptPass } from '../helpers/encrypt-pass';
 
 // Reference to collection of users in firebase
 const userRef = db.collection('users');
@@ -54,7 +55,7 @@ export const getUsers = async (req : Request, res : Response) => {
 export const getUserById = async (req : Request, res : Response) => {
 
     try {
-        //TODO: Refactor here
+        // Get id param
         const { id } = req.params;
 
         // Get all users with status true and id equal
@@ -68,13 +69,10 @@ export const getUserById = async (req : Request, res : Response) => {
             });
         }
 
-        // Processing collection data
-        const documents = returnDocsFirebase(resp);
-
         // Send data
         return res.status(200).json({
             ok: true,
-            documents
+            documents : returnDocsFirebase(resp)
         });
 
     } catch (error) {
@@ -87,7 +85,7 @@ export const getUserById = async (req : Request, res : Response) => {
 }
 
 export const postUser = async (req : Request, res : Response) => {
-    //TODO: Refactor here
+    
     // Get data from body
     const {identification , name , email, password } 
         : {identification : string, name : string, email : string, password : string} = req.body;
@@ -95,19 +93,20 @@ export const postUser = async (req : Request, res : Response) => {
     try {
         
         // Encrypt password
-        const salt : string = bcryptjs.genSaltSync();
-        const encryptPass : string = bcryptjs.hashSync(password, salt)
+        const encrypt : string = encryptPass(password);
         
-        // Create new instance of agent class
-        const user : User = new User(identification, name, email, encryptPass, true, false);
+        // Create new instance of user class
+        const user : User = new User(identification, name, email, encrypt, true, false);
 
         // Get JSON data
         const data = user.fromJson();
 
-        // Add new agent in the database
+        // Add new user in the database
         const doc = await userRef.add(data);
 
+        // Get new user data without pass
         const {pass, ...newUser} = data;
+        
         // Send data
         res.status(201).json({
             ok: true,
@@ -218,7 +217,7 @@ export const deleteUser = async(req : Request, res : Response) => {
 
 }
 
-export const getUser = async (id : String, status = true) => {
+export const getUser = async (id : string, status = true) => {
     
     // Obtain all agents with status true / false (param) and id equal
     const resp = await userRef.where('status', '==', status)

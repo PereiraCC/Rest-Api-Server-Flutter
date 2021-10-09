@@ -28,6 +28,7 @@ const bcryptjs_1 = __importDefault(require("bcryptjs"));
 const config_1 = __importDefault(require("../db/config"));
 const user_1 = __importDefault(require("../models/user"));
 const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
+const encrypt_pass_1 = require("../helpers/encrypt-pass");
 // Reference to collection of users in firebase
 const userRef = config_1.default.collection('users');
 const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
@@ -69,7 +70,7 @@ const getUsers = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.getUsers = getUsers;
 const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
-        //TODO: Refactor here
+        // Get id param
         const { id } = req.params;
         // Get all users with status true and id equal
         const resp = yield userRef.where('status', '==', true)
@@ -80,12 +81,10 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                 msg: 'User with that ID not found in the database.'
             });
         }
-        // Processing collection data
-        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
         // Send data
         return res.status(200).json({
             ok: true,
-            documents
+            documents: (0, returnDocsFirebase_1.returnDocsFirebase)(resp)
         });
     }
     catch (error) {
@@ -97,19 +96,18 @@ const getUserById = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 });
 exports.getUserById = getUserById;
 const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    //TODO: Refactor here
     // Get data from body
     const { identification, name, email, password } = req.body;
     try {
         // Encrypt password
-        const salt = bcryptjs_1.default.genSaltSync();
-        const encryptPass = bcryptjs_1.default.hashSync(password, salt);
-        // Create new instance of agent class
-        const user = new user_1.default(identification, name, email, encryptPass, true, false);
+        const encrypt = (0, encrypt_pass_1.encryptPass)(password);
+        // Create new instance of user class
+        const user = new user_1.default(identification, name, email, encrypt, true, false);
         // Get JSON data
         const data = user.fromJson();
-        // Add new agent in the database
+        // Add new user in the database
         const doc = yield userRef.add(data);
+        // Get new user data without pass
         const { pass } = data, newUser = __rest(data, ["pass"]);
         // Send data
         res.status(201).json({
