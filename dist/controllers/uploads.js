@@ -25,23 +25,26 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.uploadFile = void 0;
 const config_1 = __importDefault(require("../db/config"));
-// Configuration of cloudinary
-const cloudinary = require('cloudinary').v2;
-cloudinary.config(process.env.CLOUDINARY_URL);
 const agent_1 = require("./agent");
 const files_validators_1 = require("../helpers/files-validators");
 const user_1 = require("../controllers/user");
+const upload_image_1 = require("../helpers/upload-image");
 const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
+        // Get params
         const { id, collection } = req.params;
         // Reference to collection of agents in firebase
         let collectionRef;
         let docRef;
+        let urlImage;
+        let resp;
         switch (collection) {
             case 'agents':
+                // Set collection and get data
                 collectionRef = config_1.default.collection('agents');
                 docRef = yield (0, agent_1.getAgent)(id);
+                // Verification id there are documents
                 if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
                     return res.status(400).json({
                         msg: 'Error the agent is not already in the database'
@@ -49,8 +52,10 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 }
                 break;
             case 'users':
+                // Set collection and get data
                 collectionRef = config_1.default.collection('users');
                 docRef = yield (0, user_1.getUser)(id);
+                // Verification id there are documents
                 if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
                     return res.status(400).json({
                         msg: 'Error the user is not already in the database'
@@ -63,38 +68,40 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 });
         }
         try {
+            // Get data of the file
             const { tempFilePath, name } = (_a = req.files) === null || _a === void 0 ? void 0 : _a.file;
-            const resp = (0, files_validators_1.extensionValidation)(name, ['png', 'jpg', 'jpeg', 'gif']);
-            if (!resp) {
+            // Extension validation
+            const extension = (0, files_validators_1.extensionValidation)(name, ['png', 'jpg', 'jpeg', 'gif']);
+            if (!extension) {
                 return res.status(400).json({
                     msg: 'The file extension is not allowed.'
                 });
             }
+            // Upload image to cloudinary
             if (docRef.data().profile_image) {
-                console.log('profile image already');
-                const nombreArr = docRef.data().profile_image.split('/');
-                const nombre = nombreArr[nombreArr.length - 1];
-                const [public_id] = nombre.split('.');
-                cloudinary.uploader.destroy(public_id);
-            }
-            const { secure_url } = yield cloudinary.uploader.upload(tempFilePath);
-            yield collectionRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update({
-                profile_image: secure_url
-            });
-            if (collection == 'agents') {
-                docRef = yield (0, agent_1.getAgent)(id);
-                return res.status(200).json({
-                    ok: true,
-                    data: docRef === null || docRef === void 0 ? void 0 : docRef.data()
-                });
+                urlImage = yield (0, upload_image_1.uploadImage)(tempFilePath, false, docRef.data().profile_image);
             }
             else {
-                docRef = yield (0, user_1.getUser)(id);
-                const _b = docRef === null || docRef === void 0 ? void 0 : docRef.data(), { pass, status } = _b, data = __rest(_b, ["pass", "status"]);
-                return res.status(200).json({
-                    ok: true,
-                    data
-                });
+                urlImage = yield (0, upload_image_1.uploadImage)(tempFilePath);
+            }
+            // Update data in firebase
+            yield collectionRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update({
+                profile_image: urlImage
+            });
+            // Get new data
+            switch (collection) {
+                case 'agents':
+                    resp = yield getDataAgent(id);
+                    return res.status(200).json(resp);
+                case 'users':
+                    docRef = yield (0, user_1.getUser)(id);
+                    const _b = docRef === null || docRef === void 0 ? void 0 : docRef.data(), { pass, status } = _b, data = __rest(_b, ["pass", "status"]);
+                    return res.status(200).json({
+                        ok: true,
+                        data
+                    });
+                default:
+                    break;
             }
         }
         catch (error) {
@@ -112,4 +119,11 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.uploadFile = uploadFile;
+const getDataAgent = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    const docRef = yield (0, agent_1.getAgent)(id);
+    return {
+        ok: true,
+        data: docRef === null || docRef === void 0 ? void 0 : docRef.data()
+    };
+});
 //# sourceMappingURL=uploads.js.map
