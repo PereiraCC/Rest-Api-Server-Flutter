@@ -1,5 +1,11 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
+exports.toJson = void 0;
+const toJson = (user) => {
+    const { identification, name, email, pass, google, profile_image } = user;
+    return new User(identification, name, email, pass, true, google, profile_image);
+};
+exports.toJson = toJson;
 class User {
     // Initial user data
     constructor(identification, name, email, pass, status, google, profile_image = '') {

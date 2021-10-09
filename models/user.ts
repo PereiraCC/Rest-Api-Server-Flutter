@@ -1,4 +1,10 @@
 
+export const toJson = (user : any) : User => {
+
+    const { identification, name, email, pass, google, profile_image} = user;
+    return new User(identification, name, email, pass, true, google, profile_image)
+}  
+
 class User {
 
     // Properties
