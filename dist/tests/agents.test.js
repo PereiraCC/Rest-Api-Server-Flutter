@@ -249,7 +249,7 @@ mocha.describe('POST /api/agents', () => {
                 done();
             });
         });
-        // Identification is not numeric
+        // Identification is already in database
         mocha.it('replay with json errors message of the identification field when id is already in database', done => {
             const newData = {
                 identification: "001",
@@ -468,6 +468,249 @@ mocha.describe('POST /api/agents', () => {
                         "msg": "The phone field must be numeric",
                         "param": "phone",
                         "location": "body"
+                    }
+                ]
+            })
+                .end(err => {
+                if (err)
+                    return done(err);
+                done();
+            });
+        });
+    });
+});
+mocha.describe('PUT /api/agents:id', () => {
+    let data = {
+        email: "test0@test.com",
+    };
+    // Update agent
+    mocha.it('replay json with new data agent update', done => {
+        (0, supertest_1.default)(API)
+            .put('/api/agents/004')
+            .set('Accept', 'application/json')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+            .send(data)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(200)
+            .end(err => {
+            if (err)
+                return done(err);
+            done();
+        });
+    });
+    // No token
+    mocha.it('reply with json "msg: No token" when there is no token', done => {
+        (0, supertest_1.default)(API)
+            .put('/api/agents/004')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .send(data)
+            .expect(401)
+            .expect({
+            msg: 'No token'
+        })
+            .end(err => {
+            if (err)
+                return done(err);
+            done();
+        });
+    });
+    // No valid token
+    mocha.it('reply with json "msg: Invalid token" when there is Invalid token', done => {
+        (0, supertest_1.default)(API)
+            .put('/api/agents/004')
+            .set('Accept', 'application/json')
+            .set('x-token', 'bad000eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .send(data)
+            .expect(401)
+            .expect({
+            msg: 'Invalid token'
+        })
+            .end(err => {
+            if (err)
+                return done(err);
+            done();
+        });
+    });
+    mocha.describe('Error message of the identification param', () => {
+        // Identification is null
+        mocha.it('replay with json errors message of the identification param null', done => {
+            (0, supertest_1.default)(API)
+                .put('/api/agents')
+                .set('Accept', 'application/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .expect('Content-Type', 'text/html; charset=utf-8')
+                .send(data)
+                .expect(404)
+                .end(err => {
+                if (err)
+                    return done(err);
+                done();
+            });
+        });
+        // Identification is not numeric
+        mocha.it('replay with json errors message of the identification param is not numeric', done => {
+            (0, supertest_1.default)(API)
+                .put('/api/agents/45sd')
+                .set('Accept', 'applicacion/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .send(data)
+                .expect(400)
+                .expect({
+                "errors": [
+                    {
+                        "value": "45sd",
+                        "msg": "The identification parameter must be numeric.",
+                        "param": "id",
+                        "location": "params"
+                    },
+                    {
+                        "value": "45sd",
+                        "msg": "Error: The identification is not already in the database",
+                        "param": "id",
+                        "location": "params"
+                    }
+                ]
+            })
+                .end(err => {
+                if (err)
+                    return done(err);
+                done();
+            });
+        });
+        // Identification is already in database
+        mocha.it('replay with json errors message of the identification field when id is already in database', done => {
+            (0, supertest_1.default)(API)
+                .put('/api/agents/088')
+                .set('Accept', 'applicacion/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .send(data)
+                .expect(400)
+                .expect({
+                "errors": [
+                    {
+                        "value": "088",
+                        "msg": "Error: The identification is not already in the database",
+                        "param": "id",
+                        "location": "params"
+                    }
+                ]
+            })
+                .end(err => {
+                if (err)
+                    return done(err);
+                done();
+            });
+        });
+    });
+});
+mocha.describe('DELETE /api/agents:id', () => {
+    // delete agent
+    mocha.it('replay json with new data agent delete', done => {
+        (0, supertest_1.default)(API)
+            .delete('/api/agents/007')
+            .set('Accept', 'application/json')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(200)
+            .end(err => {
+            if (err)
+                return done(err);
+            done();
+        });
+    });
+    // No token
+    mocha.it('reply with json "msg: No token" when there is no token', done => {
+        (0, supertest_1.default)(API)
+            .delete('/api/agents/007')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(401)
+            .expect({
+            msg: 'No token'
+        })
+            .end(err => {
+            if (err)
+                return done(err);
+            done();
+        });
+    });
+    // No valid token
+    mocha.it('reply with json "msg: Invalid token" when there is Invalid token', done => {
+        (0, supertest_1.default)(API)
+            .delete('/api/agents/007')
+            .set('Accept', 'application/json')
+            .set('x-token', 'bad000eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(401)
+            .expect({
+            msg: 'Invalid token'
+        })
+            .end(err => {
+            if (err)
+                return done(err);
+            done();
+        });
+    });
+    mocha.describe('Error message of the identification param', () => {
+        // Identification is null
+        mocha.it('replay with json errors message of the identification param null', done => {
+            (0, supertest_1.default)(API)
+                .delete('/api/agents')
+                .set('Accept', 'application/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .expect('Content-Type', 'text/html; charset=utf-8')
+                .expect(404)
+                .end(err => {
+                if (err)
+                    return done(err);
+                done();
+            });
+        });
+        // Identification is not numeric
+        mocha.it('replay with json errors message of the identification param is not numeric', done => {
+            (0, supertest_1.default)(API)
+                .delete('/api/agents/008jk')
+                .set('Accept', 'applicacion/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .expect(400)
+                .expect({
+                "errors": [
+                    {
+                        "value": "008jk",
+                        "msg": "The identification parameter must be numeric.",
+                        "param": "id",
+                        "location": "params"
+                    },
+                    {
+                        "value": "008jk",
+                        "msg": "Error: The identification is not already in the database",
+                        "param": "id",
+                        "location": "params"
+                    }
+                ]
+            })
+                .end(err => {
+                if (err)
+                    return done(err);
+                done();
+            });
+        });
+        // Identification is already in database
+        mocha.it('replay with json errors message of the identification field when id is already in database', done => {
+            (0, supertest_1.default)(API)
+                .delete('/api/agents/088')
+                .set('Accept', 'applicacion/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .expect(400)
+                .expect({
+                "errors": [
+                    {
+                        "value": "088",
+                        "msg": "Error: The identification is not already in the database",
+                        "param": "id",
+                        "location": "params"
                     }
                 ]
             })
