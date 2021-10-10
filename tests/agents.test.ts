@@ -16,22 +16,22 @@ mocha.describe('GET /api/agents', () => {
 
 mocha.describe('GET:id /api/agents/:id', () => {
 
-    // TODO: No valid token, No token, identification is not numeric, 
-
+    // all good
     mocha.it('respond with json containing a single agent', done => {
         request(API)
             .get('/api/agents/004')
             .set('Accept', 'application/json')
-            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(200, done);
     });
 
+    // Agent not found 
     mocha.it('respond with json "msg: Agent with that ID not found in the database." when user does not exists', done => {
         request(API)
             .get('/api/agents/058')
             .set('Accept', 'application/json')
-            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(404)
             .expect({
@@ -42,13 +42,72 @@ mocha.describe('GET:id /api/agents/:id', () => {
                 done();
             });
     });
+
+    // No token
+    mocha.it('reply with json "msg: No token" when there is no token', done => {
+
+        request(API)
+            .get('/api/agents/004')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(401)
+            .expect({
+                msg : 'No token'
+            })
+            .end( err => {
+                if(err) return done(err);
+                done();
+            });
+    });
+
+    // No valid token
+    mocha.it('reply with json "msg: Invalid token" when there is Invalid token', done => {
+
+        request(API)
+            .get('/api/agents/004')
+            .set('Accept', 'application/json')
+            .set('x-token', 'bad000eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(401)
+            .expect({
+                msg : 'Invalid token'
+            })
+            .end( err => {
+                if(err) return done(err);
+                done();
+            });
+    });
+
+    // identification is not numeric
+    mocha.it('reply with json "msg: The identification parameter must be numeric." when id param is not numeric', done => {
+
+        request(API)
+            .get('/api/agents/05ff')
+            .set('Accept', 'application/json')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(400)
+            .expect({
+                "errors": [
+                    {
+                        "value": "05ff",
+                        "msg": "The identification parameter must be numeric.",
+                        "param": "id",
+                        "location": "params"
+                    }
+                ]
+            })
+            .end( err => {
+                if(err) return done(err);
+                done();
+            });
+    });
+
 });
 
 mocha.describe('POST /api/agents', () => {
 
-    // TODO: No token, Invalid token, validation each field
-
-    const data = {
+    let data = {
         identification : "000",
         name           : "testing",
         lastname       : "testing",
@@ -56,12 +115,13 @@ mocha.describe('POST /api/agents', () => {
         phone          : "88886666"
     };
 
+    // Create new Agent
     mocha.it('respond with json containing new agent data', done => {
 
         request(API)
             .post('/api/agents')
             .set('Accept', 'application/json')
-            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
             .send(data)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(201)
@@ -69,6 +129,369 @@ mocha.describe('POST /api/agents', () => {
                 if(err) return done(err);
                 done();
             })
+
+    });
+
+    // No token
+    mocha.it('reply with json "msg: No token" when there is no token', done => {
+
+        request(API)
+            .post('/api/agents')
+            .set('Accept', 'application/json')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .send(data)
+            .expect(401)
+            .expect({
+                msg : 'No token'
+            })
+            .end( err => {
+                if(err) return done(err);
+                done();
+            });
+    });
+
+    // No valid token
+    mocha.it('reply with json "msg: Invalid token" when there is Invalid token', done => {
+
+        request(API)
+            .post('/api/agents')
+            .set('Accept', 'application/json')
+            .set('x-token', 'bad000eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .send(data)
+            .expect(401)
+            .expect({
+                msg : 'Invalid token'
+            })
+            .end( err => {
+                if(err) return done(err);
+                done();
+            });
+    });
+
+    mocha.describe('Error message of the identification field', () => {
+
+        // Identification is null
+        mocha.it('replay with json errors message of the identification field null', done => {
+
+            const newData = {
+                name           : "testing",
+                lastname       : "testing",
+                email          : "test0@test.com",
+                phone          : "88886666"
+            };
+    
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'application/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "msg": "The identification field is required.",
+                            "param": "identification",
+                            "location": "body"
+                        },
+                        {
+                            "msg": "The identification field must be numeric",
+                            "param": "identification",
+                            "location": "body"
+                        },
+                        {
+                            "msg": "Function Query.where() called with invalid data. Unsupported field value: undefined",
+                            "param": "identification",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                });
+        });
+
+        // Identification is not numeric
+        mocha.it('replay with json errors message of the identification field is not numeric', done => {
+
+            const newData = {
+                identification : "001sd",
+                name           : "testing",
+                lastname       : "testing",
+                email          : "test0@test.com",
+                phone          : "88886666"
+            };
+
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'applicacion/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "value": "001sd",
+                            "msg": "The identification field must be numeric",
+                            "param": "identification",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                })
+        });
+
+        // Identification is not numeric
+        mocha.it('replay with json errors message of the identification field when id is already in database', done => {
+
+            const newData = {
+                identification : "001",
+                name           : "testing",
+                lastname       : "testing",
+                email          : "test0@test.com",
+                phone          : "88886666"
+            };
+
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'applicacion/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "value": "001",
+                            "msg": "Error: The identification is already in the database",
+                            "param": "identification",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                })
+        });
+    });
+
+    mocha.describe('Error message of the name and lastname fields', () => {
+
+        // name is null
+        mocha.it('replay with json errors message of the name field null', done => {
+
+            const newData = {
+                identification : "085",
+                lastname       : "testing",
+                email          : "test0@test.com",
+                phone          : "88886666"
+            };
+    
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'application/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "msg": "The name field is required.",
+                            "param": "name",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                });
+        });
+
+        // lastname is null
+        mocha.it('replay with json errors message of the lastname field is null', done => {
+
+            const newData = {
+                identification : "085",
+                name           : "testing",
+                email          : "test0@test.com",
+                phone          : "88886666"
+            };
+
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'applicacion/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "msg": "The last name field is required.",
+                            "param": "lastname",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                })
+        });
+
+    });
+
+    mocha.describe('Error message of the email field', () => {
+
+        // email is null
+        mocha.it('replay with json errors message of the email field null', done => {
+
+            const newData = {
+                identification : "085",
+                name           : "testing",
+                lastname       : "testing",
+                phone          : "88886666"
+            };
+    
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'application/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "msg": "The email field is required.",
+                            "param": "email",
+                            "location": "body"
+                        },
+                        {
+                            "msg": "The email field is invalid.",
+                            "param": "email",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                });
+        });
+
+        // email is invalid
+        mocha.it('replay with json errors message of the email field is invalid', done => {
+
+            const newData = {
+                identification : "085",
+                name           : "testing",
+                lastname       : "testing",
+                email          : "test0testcom",
+                phone          : "88886666"
+            };
+
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'applicacion/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "value": "test0testcom",
+                            "msg": "The email field is invalid.",
+                            "param": "email",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                })
+        });
+
+    });
+
+    mocha.describe('Error message of the phone field', () => {
+
+        // phone is null
+        mocha.it('replay with json errors message of the phone field null', done => {
+
+            const newData = {
+                identification : "085",
+                name           : "testing",
+                lastname       : "testing",
+                email          : "test0@test.com",
+            };
+    
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'application/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "msg": "The phone field is required.",
+                            "param": "phone",
+                            "location": "body"
+                        },
+                        {
+                            "msg": "The phone field must be numeric",
+                            "param": "phone",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                });
+        });
+
+        // phone is invalid
+        mocha.it('replay with json errors message of the phone field is invalid', done => {
+
+            const newData = {
+                identification : "085",
+                name           : "testing",
+                lastname       : "testing",
+                email          : "test0@test.com",
+                phone          : "88886666dad"
+            };
+
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'applicacion/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "value": "88886666dad",
+                            "msg": "The phone field must be numeric",
+                            "param": "phone",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                })
+        });
 
     });
 
