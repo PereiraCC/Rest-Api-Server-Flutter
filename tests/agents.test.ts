@@ -43,3 +43,33 @@ mocha.describe('GET:id /api/agents/:id', () => {
             });
     });
 });
+
+mocha.describe('POST /api/agents', () => {
+
+    // TODO: No token, Invalid token, validation each field
+
+    const data = {
+        identification : "000",
+        name           : "testing",
+        lastname       : "testing",
+        email          : "test0@test.com",
+        phone          : "88886666"
+    };
+
+    mocha.it('respond with json containing new agent data', done => {
+
+        request(API)
+            .post('/api/agents')
+            .set('Accept', 'application/json')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .send(data)
+            .expect('Content-Type', 'application/json; charset=utf-8')
+            .expect(201)
+            .end(err => {
+                if(err) return done(err);
+                done();
+            })
+
+    });
+
+});
