@@ -33,7 +33,8 @@ const agentRef = config_1.default.collection('agents');
 const getAgents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         // Get all agents with status in true
-        const resp = yield agentRef.where('status', '==', true).get();
+        const resp = yield agentRef.orderBy('identification')
+            .where('status', '==', true).get();
         // Processing collection data
         const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
         // Send data

@@ -12,7 +12,8 @@ export const getAgents = async (req : Request, res : Response) => {
 
     try {
         // Get all agents with status in true
-        const resp = await agentRef.where('status', '==', true).get();
+        const resp = await agentRef.orderBy('identification')
+                                   .where('status', '==', true).get();
 
         // Processing collection data
         const documents = returnDocsFirebase(resp);
