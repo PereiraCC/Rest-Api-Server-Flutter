@@ -1,9 +1,4 @@
 
-.bodyCustom {
-    background-color: black; 
-    color: white;
-}
-
 .title {
     /* background-color: red; */
     height: 12em;
@@ -40,6 +35,15 @@
 .customBiograph {
     width: 800px;
     /* background-color: yellow; */
+}
+
+.customBody {
+    /* background-color: red; */
+    margin-left: 25px;
+    margin-right: 150px;
+    text-align: justify;
+    padding-left: 50px;
+    padding-right: 50px;
 }
 
 

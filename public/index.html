@@ -5,7 +5,7 @@
   <meta charset="UTF-8">
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Agent management REST API</title>
+  <title>My management REST API</title>
 
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
@@ -54,16 +54,23 @@
       
   </div>
 
- <h1 class="h1">Agent management REST API</h1>
-  <figure>
+  <div class="customBody">
+
+    <h1 class="h1">My company management REST API</h1>
+
+    <br/>
+
     <blockquote class="blockquote">
-      <p>This is the Agent Management REST API.</p>
+      <p>
+        This is the REST API of my company management. This was developed in node js with express framework, it connects with firebase as a database.
+        You can find the source code <a href="https://github.com/PereiraCC/Rest-Api-Server-Flutter.git" target="_blank">here</a> you can also contact for an upgrade request. <br/>
+      </p>
 
       <div class="row">
-        <div class="col-4 col-sm-2">
-          <h3 class="h3">Version 0.6.0</h3>
+        <div class="col-3">
+          <h3 class="h3">Version 0.8.0</h3>
         </div>
-        <div class="col-4 col-sm-2">
+        <div class="col-3">
           <a href="https://documenter.getpostman.com/view/14542124/UUxuj9tR" class="btn btn-primary">View
             documentation</a>
         </div>
@@ -72,40 +79,155 @@
       <hr>
       <br>
 
-      <div class="row">
-        <div class="col-4 col-sm-5">
-          <p class="h4">The path of the agent with five services.</p>
-          <ol>
-            <li>Get all agents</li>
-            <li>Get an agent by ID</li>
-            <li>Create new agent</li>
-            <li>Update an agent</li>
-            <li>Delete an agent</li>
-          </ol>
-        </div>
-        <div class="col-4 col-sm-5">
-          <p class="h4">The path of the uploads</p>
-          <ol>
-            <li>Upload an agent's profile picture</li>
+      <div class="col">
+        <p class="h4">Users</p>
+        <p>
+          This is the users' path where it contains the following actions:
+        </p>
+        <ol>
+          <li>GET api/users: Get all registered users</li>
             <ul>
-              <li>Only files with extensions: </li>
-              <ol>
-                <li>png</li>
-                <li>jpg</li>
-                <li>jpeg</li>
-                <li>gif</li>
-              </ol>
+              <li>No require params</li>
+              <li>No require authorization</li>
             </ul>
-          </ol>
-        </div>
+            <br/>
+          <li>GET:ID api/users: Get a specific user by means of their id</li>
+            <ul>
+              <li>Params: Identification of a user</li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+          <li>POST api/users: Create new user</li>
+            <ul>
+              <li>No require params</li>
+              <li>Require JSON data</li>
+              <li>No require authorization</li>
+            </ul>
+            <br/>
+          <li>PUT: api/users: Update an user</li>
+            <ul>
+              <li>Params: Identification of a user</li>
+              <li>Require JSON data</li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+          <li>DELETE: api/users: Delete an user</li>
+            <ul>
+              <li>Params: Identification of a user</li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+        </ol>
       </div>
+
+      <div class="col">
+        <p class="h4">Authentication</p>
+        <p>
+          This is the authentication path where it contains the following actions:
+        </p>
+        <ol>
+          <li>POST api/auth/login: Log in with email and password</li>
+            <ul>
+              <li>No require params</li>
+              <li>Require JSON data</li>
+              <li>No require authorization</li>
+            </ul>
+            <br/>
+            <li>POST api/auth/google: Log in with google sing in </li>
+            <ul>
+              <li>No require params</li>
+              <li>Require JSON data (google id_token)</li>
+              <li>No require authorization</li>
+            </ul>
+            <br/>
+        </ol>
+      </div>
+        
+      <div class="col">
+        <p class="h4">Agents</p>
+        <p>
+          This is the path of the agents where it contains the following actions:
+        </p>
+        <ol>
+          <li>GET api/agents: Get all registered agents</li>
+            <ul>
+              <li>No require params</li>
+              <li>No require authorization</li>
+            </ul>
+            <br/>
+          <li>GET:ID api/agents: Get a specific agent by means of their id</li>
+            <ul>
+              <li>Params: Identification of a agent</li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+          <li>POST api/agents: Create new agent</li>
+            <ul>
+              <li>No require params</li>
+              <li>Require JSON data</li>
+              <li>No require authorization</li>
+            </ul>
+            <br/>
+          <li>PUT: api/agents: Update an agent</li>
+            <ul>
+              <li>Params: Identification of a agent</li>
+              <li>Require JSON data</li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+          <li>DELETE: api/agents: Delete an agent</li>
+            <ul>
+              <li>Params: Identification of a agent</li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+        </ol>
+      </div>
+
+      <div class="col">
+        <p class="h4">Uploads images</p>
+        <p>
+          This is the uploads path where it contains the following actions:
+        </p>
+        <ol>
+          <li>PUT:ID api/uploads/users: Upload image for a user</li>
+            <ul>
+              <li>Params: Identification of a user</li>
+              <li>Require file (Image)</li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+            <li>PUT:ID api/uploads/agents: Upload image for an agent</li>
+              <ul>
+                <li>Params: Identification of a agent</li>
+                <li>Require file (Image)</li>
+                <li>Require authorization</li>
+              </ul>
+            <br/>
+        </ol>
+        <p>
+          Allowed extensions
+        </p>
+          <ul>
+            <li>png</li>
+            <li>jpg</li>
+            <li>jpeg</li>
+            <li>gif</li>
+          </ul>
+      </div>
+
     </blockquote>
+
+  </div>
+
+  <figure>
+    
     <br>
     
     <br>
     <div class="col-2 col-sm-4">
       <figcaption class="blockquote-footer">
-        Carlos Pereira Coto - September 29, 2021
+        Carlos Pereira Coto - October 11, 2021
       </figcaption>
     </div>
     
