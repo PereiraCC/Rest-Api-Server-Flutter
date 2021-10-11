@@ -4,6 +4,45 @@
     color: white;
 }
 
+.title {
+    /* background-color: red; */
+    height: 12em;
+    width: 62em;
+}
+
+.customAvatar {
+    width: 130px;
+    /* background-color: green; */
+    margin-top: 35px;
+    padding-left: 18px;
+    padding-top: 8px;
+}
+
+.customName {
+    width: 300px;
+    height: 50px;
+    /* background-color: blue; */
+    margin-top: 70px;
+    font-size: 30px;
+    font-weight: bold;
+}
+
+.customIconsSocialNetwork {
+    width: 300px;
+    height: 50px;
+    /* background-color: blue; */
+    margin-top: 70px;
+    margin-left: 275px;
+    font-size: 25px;
+    font-weight: bold;
+}
+
+.customBiograph {
+    width: 800px;
+    /* background-color: yellow; */
+}
+
+
 ul.icons {
     cursor: default;
     list-style: none;
@@ -23,6 +62,6 @@ ul.icons {
         line-height: 2em;
         text-align: center;
         border: 0;
-        color: white;
+        color: black;
         text-decoration:none
     }
