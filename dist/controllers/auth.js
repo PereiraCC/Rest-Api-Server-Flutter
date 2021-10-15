@@ -121,7 +121,7 @@ const createNewUserGoogle = (name, email, picture, id_token) => __awaiter(void 0
     // Send data
     return {
         ok: true,
-        id_user: doc.id,
+        uid: doc.id,
         newUser,
         token
     };

@@ -111,7 +111,7 @@ const postUser = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Send data
         res.status(201).json({
             ok: true,
-            id_user: doc.id,
+            uid: doc.id,
             newUser
         });
     }

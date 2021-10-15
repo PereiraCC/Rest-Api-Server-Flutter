@@ -15,7 +15,7 @@ export const returnDocsFirebase = ( snapshot : firebase.firestore.QuerySnapshot<
 
         // Save agent in list
         documents.push({
-            id_agent: snapchild.id,
+            uid: snapchild.id,
             ...temp
         });
     });

@@ -87,7 +87,7 @@ export const postAgent = async (req : Request, res : Response) => {
         // Send data
         res.status(201).json({
             ok: true,
-            id_agent : doc.id,
+            uid : doc.id,
             data
         });
 
@@ -130,7 +130,7 @@ export const putAgent = async (req : Request, res : Response) => {
         // Send data
         res.json({
             ok: true,
-            id_agent : docRef?.id,
+            uid : docRef?.id,
             agent : docRef?.data()
         });
        
@@ -170,7 +170,7 @@ export const deleteAgent = async (req : Request, res : Response) => {
         // Send data
         res.json({
             ok: true,
-            id_agent : docRef?.id,
+            uid : docRef?.id,
             agent : docRef?.data()
         });
 

@@ -10,7 +10,7 @@ const returnDocsFirebase = (snapshot) => {
         delete temp.status;
         delete temp.pass;
         // Save agent in list
-        documents.push(Object.assign({ id_agent: snapchild.id }, temp));
+        documents.push(Object.assign({ uid: snapchild.id }, temp));
     });
     // console.log(documents);
     return documents;

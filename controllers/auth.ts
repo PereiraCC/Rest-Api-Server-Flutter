@@ -126,7 +126,7 @@ const createNewUserGoogle = async (name : string, email : string, picture : stri
     // Send data
     return {
         ok: true,
-        id_user : doc.id,
+        uid : doc.id,
         newUser,
         token
     };

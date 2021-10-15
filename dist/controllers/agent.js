@@ -94,7 +94,7 @@ const postAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Send data
         res.status(201).json({
             ok: true,
-            id_agent: doc.id,
+            uid: doc.id,
             data
         });
     }
@@ -129,7 +129,7 @@ const putAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Send data
         res.json({
             ok: true,
-            id_agent: docRef === null || docRef === void 0 ? void 0 : docRef.id,
+            uid: docRef === null || docRef === void 0 ? void 0 : docRef.id,
             agent: docRef === null || docRef === void 0 ? void 0 : docRef.data()
         });
     }
@@ -162,7 +162,7 @@ const deleteAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         // Send data
         res.json({
             ok: true,
-            id_agent: docRef === null || docRef === void 0 ? void 0 : docRef.id,
+            uid: docRef === null || docRef === void 0 ? void 0 : docRef.id,
             agent: docRef === null || docRef === void 0 ? void 0 : docRef.data()
         });
     }
