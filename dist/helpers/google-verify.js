@@ -16,7 +16,7 @@ function verify(token = '') {
     return __awaiter(this, void 0, void 0, function* () {
         const ticket = yield client.verifyIdToken({
             idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID,
+            audience: process.env.GOOGLE_CLIENT_ID_FLUTTER,
         });
         const { name, picture, email } = ticket.getPayload();
         return {
