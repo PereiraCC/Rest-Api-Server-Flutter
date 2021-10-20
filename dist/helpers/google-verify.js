@@ -13,10 +13,15 @@ exports.verify = void 0;
 const google_auth_library_1 = require("google-auth-library");
 const client = new google_auth_library_1.OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 function verify(token = '') {
+    var _a, _b;
     return __awaiter(this, void 0, void 0, function* () {
         const ticket = yield client.verifyIdToken({
             idToken: token,
-            audience: process.env.GOOGLE_CLIENT_ID_FLUTTER,
+            // audience: process.env.GOOGLE_CLIENT_ID
+            audience: [
+                (_a = process.env.GOOGLE_CLIENT_ID_FLUTTER) !== null && _a !== void 0 ? _a : '',
+                (_b = process.env.GOOGLE_CLIENT_ID) !== null && _b !== void 0 ? _b : ''
+            ]
         });
         const { name, picture, email } = ticket.getPayload();
         return {
