@@ -1,10 +1,11 @@
 import { Request, Response } from "express";
 import bcryptjs from 'bcryptjs';
 
-import db from '../db/config';
 import { generateJWT } from '../helpers/generate-jwt';
 import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 import { verify } from "../helpers/google-verify";
+import db from '../db/config';
+import jwt, { Secret } from 'jsonwebtoken';
 import User from "../models/user";
 
 // Reference to collection of users in firebase
@@ -22,7 +23,7 @@ export const login = async (req : Request, res: Response) => {
                                   .where('email','==', email).get();
 
         // Verification if there are documents
-        if( resp.docs.length == 0 ){
+        if( resp.empty ){
             return res.status(404).json({
                 msg: 'User not found in the database.'
             });
@@ -74,7 +75,7 @@ export const googleSingIn = async (req : Request, res: Response) => {
         const resp = await userRef.where('email','==', email).get();
 
         // Verification if there are documents
-        if( resp.docs.length == 0 ){
+        if( resp.empty ){
             
             const resp = await createNewUserGoogle(name || '', email || '', picture || '', id_token);
             return res.status(201).json(resp);
@@ -89,7 +90,7 @@ export const googleSingIn = async (req : Request, res: Response) => {
         }
 
         // Generar el JWT
-        const token = await generateJWT( id_token );
+        const token = await generateJWT( resp.docs[0].data().name );
 
         // Send data
         return res.json({
@@ -104,6 +105,36 @@ export const googleSingIn = async (req : Request, res: Response) => {
         })
     }
 
+}
+
+export const validJWT = async ( req: Request, res: Response)  => {
+
+    try {
+
+        const { token } = req.body;
+
+        const { uid } : jwt.JwtPayload = jwt.verify( token, process.env.SECRETORPRIVATEKEY as Secret ) as jwt.JwtPayload;
+
+        const snapshotId = await userRef.where('status', '==', true)
+                                   .where('identification','==', uid).get();
+
+        const snapshotName = await userRef.where('status', '==', true)
+                                   .where('name','==', uid).get();
+                                    
+        if( snapshotId.empty && snapshotName.empty ){
+            return res.status(401).json({
+                msg: 'Token - not valid - user does not exist in DB'
+            });
+        }
+
+        return res.status(200).json({ok: true});
+
+    } catch (error) {
+        console.log(error);
+        res.status(401).json({
+            msg: 'Invalid token'
+        });
+    }
 }
 
 const createNewUserGoogle = async (name : string, email : string, picture : string, id_token : string) => {
@@ -121,7 +152,7 @@ const createNewUserGoogle = async (name : string, email : string, picture : stri
     const {pass, status, ...newUser} = data;
 
     // Create JWT
-    const token = await generateJWT( id_token );
+    const token = await generateJWT( newUser.name );
 
     // Send data
     return {

@@ -23,12 +23,13 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.googleSingIn = exports.login = void 0;
+exports.validJWT = exports.googleSingIn = exports.login = void 0;
 const bcryptjs_1 = __importDefault(require("bcryptjs"));
-const config_1 = __importDefault(require("../db/config"));
 const generate_jwt_1 = require("../helpers/generate-jwt");
 const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
 const google_verify_1 = require("../helpers/google-verify");
+const config_1 = __importDefault(require("../db/config"));
+const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
 const user_1 = __importDefault(require("../models/user"));
 // Reference to collection of users in firebase
 const userRef = config_1.default.collection('users');
@@ -40,7 +41,7 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         const resp = yield userRef.where('status', '==', true)
             .where('email', '==', email).get();
         // Verification if there are documents
-        if (resp.docs.length == 0) {
+        if (resp.empty) {
             return res.status(404).json({
                 msg: 'User not found in the database.'
             });
@@ -81,7 +82,7 @@ const googleSingIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // Get all users with email equal
         const resp = yield userRef.where('email', '==', email).get();
         // Verification if there are documents
-        if (resp.docs.length == 0) {
+        if (resp.empty) {
             const resp = yield createNewUserGoogle(name || '', email || '', picture || '', id_token);
             return res.status(201).json(resp);
         }
@@ -92,7 +93,7 @@ const googleSingIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
             });
         }
         // Generar el JWT
-        const token = yield (0, generate_jwt_1.generateJWT)(id_token);
+        const token = yield (0, generate_jwt_1.generateJWT)(resp.docs[0].data().name);
         // Send data
         return res.json({
             msg: 'ok',
@@ -107,6 +108,29 @@ const googleSingIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
     }
 });
 exports.googleSingIn = googleSingIn;
+const validJWT = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    try {
+        const { token } = req.body;
+        const { uid } = jsonwebtoken_1.default.verify(token, process.env.SECRETORPRIVATEKEY);
+        const snapshotId = yield userRef.where('status', '==', true)
+            .where('identification', '==', uid).get();
+        const snapshotName = yield userRef.where('status', '==', true)
+            .where('name', '==', uid).get();
+        if (snapshotId.empty && snapshotName.empty) {
+            return res.status(401).json({
+                msg: 'Token - not valid - user does not exist in DB'
+            });
+        }
+        return res.status(200).json({ ok: true });
+    }
+    catch (error) {
+        console.log(error);
+        res.status(401).json({
+            msg: 'Invalid token'
+        });
+    }
+});
+exports.validJWT = validJWT;
 const createNewUserGoogle = (name, email, picture, id_token) => __awaiter(void 0, void 0, void 0, function* () {
     // Create new instance of agent class
     const user = new user_1.default('google-id', name || '', email || '', 'no-pass', true, true, picture);
@@ -117,7 +141,7 @@ const createNewUserGoogle = (name, email, picture, id_token) => __awaiter(void 0
     // Get new user data without pass and status
     const { pass, status } = data, newUser = __rest(data, ["pass", "status"]);
     // Create JWT
-    const token = yield (0, generate_jwt_1.generateJWT)(id_token);
+    const token = yield (0, generate_jwt_1.generateJWT)(newUser.name);
     // Send data
     return {
         ok: true,
