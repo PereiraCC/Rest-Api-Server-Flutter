@@ -21,5 +21,9 @@ router.post('/google', [
     (0, express_validator_1.check)('id_token', 'The google token is required').not().isEmpty(),
     inputs_validation_1.fieldsValidation
 ], auth_1.googleSingIn);
+router.post('/validJWT', [
+    (0, express_validator_1.check)('token', 'The token is required').not().isEmpty(),
+    inputs_validation_1.fieldsValidation
+], auth_1.validJWT);
 exports.default = router;
 //# sourceMappingURL=auth.js.map

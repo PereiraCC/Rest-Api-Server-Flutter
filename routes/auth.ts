@@ -3,7 +3,7 @@ import { Router } from "express";
 import { check } from "express-validator";
 
 // Imports od controller, helpers and middlewares
-import { googleSingIn, login } from "../controllers/auth";
+import { googleSingIn, login, validJWT } from "../controllers/auth";
 import { lenghtPassword } from "../helpers/db-validators";
 import { fieldsValidation } from "../middlewares/inputs-validation";
 
@@ -23,5 +23,10 @@ router.post('/google', [
     check('id_token', 'The google token is required').not().isEmpty(),
     fieldsValidation
 ], googleSingIn);
+
+router.post('/validJWT', [
+    check('token', 'The token is required').not().isEmpty(),
+    fieldsValidation
+], validJWT);
 
 export default router;
