@@ -72,17 +72,16 @@ export const getAgentById = async (req : Request, res : Response) => {
 export const postAgent = async (req : Request, res : Response) => {
 
     // Get data form JSON
-    const { identification, name, lastname, email, phone } = req.body;
+    const { identification, name, lastname, email, phone, userID } = req.body;
 
     try {
         
         // Create new instance of agent class and get JSON
-        const agent = new Agent(identification, name, lastname, email, phone, true);
+        const agent = new Agent(identification, name, lastname, email,phone, userID , true);
         const data = agent.fromJson();
 
         // Add new agent in the database
         const doc = await agentRef.add(data);
-        // console.log(doc.id);
 
         // Send data
         res.status(201).json({

@@ -83,14 +83,13 @@ const getAgentById = (req, res) => __awaiter(void 0, void 0, void 0, function* (
 exports.getAgentById = getAgentById;
 const postAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get data form JSON
-    const { identification, name, lastname, email, phone } = req.body;
+    const { identification, name, lastname, email, phone, userID } = req.body;
     try {
         // Create new instance of agent class and get JSON
-        const agent = new agent_1.default(identification, name, lastname, email, phone, true);
+        const agent = new agent_1.default(identification, name, lastname, email, phone, userID, true);
         const data = agent.fromJson();
         // Add new agent in the database
         const doc = yield agentRef.add(data);
-        // console.log(doc.id);
         // Send data
         res.status(201).json({
             ok: true,
