@@ -97,7 +97,9 @@ const googleSingIn = (req, res) => __awaiter(void 0, void 0, void 0, function* (
         // Send data
         return res.json({
             msg: 'ok',
+            uid: resp.docs[0].id,
             token,
+            documents: (0, returnDocsFirebase_1.returnDocsFirebase)(resp)
         });
     }
     catch (error) {

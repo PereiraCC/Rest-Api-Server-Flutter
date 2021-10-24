@@ -95,7 +95,9 @@ export const googleSingIn = async (req : Request, res: Response) => {
         // Send data
         return res.json({
             msg :'ok',
+            uid : resp.docs[0].id,
             token,
+            documents: returnDocsFirebase( resp )
         });
 
     } catch (error) {
