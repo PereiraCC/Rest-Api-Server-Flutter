@@ -11,12 +11,12 @@ const validation_jwt_1 = require("../middlewares/validation-jwt");
 // Instance of router
 const router = (0, express_1.Router)();
 // Get all agents
-router.get('/', [
+router.get('/:userID', [
     (0, express_validator_1.check)('userID', 'The user ID field is required.').not().isEmpty(),
     inputs_validation_1.fieldsValidation
 ], agent_1.getAgents);
 // Get an agent by id
-router.get('/:id', [
+router.get('/:userID/:id', [
     validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
     (0, express_validator_1.check)('userID', 'The user ID field is required.').not().isEmpty(),

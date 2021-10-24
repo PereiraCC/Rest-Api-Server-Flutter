@@ -12,7 +12,7 @@ export const getAgents = async (req : Request, res : Response) => {
 
     try {
 
-        const { userID } = req.body;
+        const { userID } = req.params;
 
         // Get all agents with status in true
         const resp = await agentRef.orderBy('identification')
@@ -41,8 +41,7 @@ export const getAgents = async (req : Request, res : Response) => {
 export const getAgentById = async (req : Request, res : Response) => {
 
     // Get ID param 
-    const { id } = req.params;
-    const { userID } = req.body;
+    const { id, userID } = req.params;
 
     try {
         

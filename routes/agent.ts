@@ -12,13 +12,13 @@ import { validationJWT } from "../middlewares/validation-jwt";
 const router = Router();
 
 // Get all agents
-router.get('/', [
+router.get('/:userID', [
     check('userID', 'The user ID field is required.').not().isEmpty(),
     fieldsValidation
 ], getAgents);
 
 // Get an agent by id
-router.get('/:id', [
+router.get('/:userID/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
     check('userID', 'The user ID field is required.').not().isEmpty(),
