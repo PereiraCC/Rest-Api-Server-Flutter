@@ -11,9 +11,13 @@ const agentRef = db.collection('agents');
 export const getAgents = async (req : Request, res : Response) => {
 
     try {
+
+        const { userID } = req.body;
+
         // Get all agents with status in true
         const resp = await agentRef.orderBy('identification')
-                                   .where('status', '==', true).get();
+                                   .where('status', '==', true)
+                                   .where('userID', '==', userID).get();
 
         // Processing collection data
         const documents = returnDocsFirebase(resp);
@@ -38,12 +42,14 @@ export const getAgentById = async (req : Request, res : Response) => {
 
     // Get ID param 
     const { id } = req.params;
+    const { userID } = req.body;
 
     try {
         
         // Get all agents with status true and id equal
         const resp = await agentRef.where('status', '==', true)
-                                   .where('identification','==', id).get();
+                                   .where('identification','==', id)
+                                   .where('userID', '==', userID).get();
 
         // Verification if there are documents
         if( resp.docs.length == 0 ){

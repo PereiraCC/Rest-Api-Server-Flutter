@@ -32,9 +32,11 @@ const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
 const agentRef = config_1.default.collection('agents');
 const getAgents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
+        const { userID } = req.body;
         // Get all agents with status in true
         const resp = yield agentRef.orderBy('identification')
-            .where('status', '==', true).get();
+            .where('status', '==', true)
+            .where('userID', '==', userID).get();
         // Processing collection data
         const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
         // Send data
@@ -55,10 +57,12 @@ exports.getAgents = getAgents;
 const getAgentById = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get ID param 
     const { id } = req.params;
+    const { userID } = req.body;
     try {
         // Get all agents with status true and id equal
         const resp = yield agentRef.where('status', '==', true)
-            .where('identification', '==', id).get();
+            .where('identification', '==', id)
+            .where('userID', '==', userID).get();
         // Verification if there are documents
         if (resp.docs.length == 0) {
             return res.status(404).json({
