@@ -7,16 +7,18 @@ const express_1 = __importDefault(require("express"));
 const cors_1 = __importDefault(require("cors"));
 const express_fileupload_1 = __importDefault(require("express-fileupload"));
 const auth_1 = __importDefault(require("../routes/auth"));
-const agent_1 = __importDefault(require("../routes/agent"));
 const user_1 = __importDefault(require("../routes/user"));
+const agent_1 = __importDefault(require("../routes/agent"));
 const uploads_1 = __importDefault(require("../routes/uploads"));
+const products_1 = __importDefault(require("../routes/products"));
 class Server {
     constructor() {
         this.apiPaths = {
-            auth: '/api/auth',
-            users: '/api/users',
             agents: '/api/agents',
-            uploads: '/api/uploads'
+            auth: '/api/auth',
+            products: '/api/products',
+            uploads: '/api/uploads',
+            users: '/api/users',
         };
         this.app = (0, express_1.default)();
         this.port = process.env.PORT || '8082';
@@ -45,6 +47,7 @@ class Server {
         this.app.use(this.apiPaths.agents, agent_1.default);
         this.app.use(this.apiPaths.users, user_1.default);
         this.app.use(this.apiPaths.uploads, uploads_1.default);
+        this.app.use(this.apiPaths.products, products_1.default);
     }
     listen() {
         this.app.listen(this.port, () => {
