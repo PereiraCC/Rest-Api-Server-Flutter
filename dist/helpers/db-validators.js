@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.lenghtPassword = exports.allowableCollections = exports.existsbyId = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
+exports.lenghtPassword = exports.allowableCollections = exports.existsbyId = exports.existsIDFirebase = exports.existsIdentification = exports.inyectionSqlInputs = void 0;
 const config_1 = __importDefault(require("../db/config"));
 const inyectionSqlInputs = (data) => {
     if (data.toUpperCase().includes('SELECT') || data.toUpperCase().includes('DELETE') ||
@@ -21,22 +21,32 @@ const inyectionSqlInputs = (data) => {
     }
 };
 exports.inyectionSqlInputs = inyectionSqlInputs;
-const existsIdentification = (id, collection) => __awaiter(void 0, void 0, void 0, function* () {
+const existsIdentification = (id, collection, nameField) => __awaiter(void 0, void 0, void 0, function* () {
     const documRef = config_1.default.collection(collection);
     // Get data from database with id equal
-    const resp = yield documRef.where('identification', '==', id).get();
+    const resp = yield documRef.where(nameField, '==', id).get();
     // check for documents
     if (resp.docs.length > 0) {
         throw new Error('Error: The identification is already in the database');
     }
 });
 exports.existsIdentification = existsIdentification;
-const existsbyId = (id, collection) => __awaiter(void 0, void 0, void 0, function* () {
+const existsIDFirebase = (id, collection) => __awaiter(void 0, void 0, void 0, function* () {
+    const documRef = config_1.default.collection(collection);
+    // Get data from database with id equal
+    const resp = yield documRef.doc(id).get();
+    // check for documents
+    if (!resp.exists) {
+        throw new Error('Error: The userID is not already in the database');
+    }
+});
+exports.existsIDFirebase = existsIDFirebase;
+const existsbyId = (id, collection, nameField) => __awaiter(void 0, void 0, void 0, function* () {
     const documRef = config_1.default.collection(collection);
     // Obtain all agents with id equal
-    const resp = yield documRef.where('identification', '==', id).get();
+    const resp = yield documRef.where(nameField, '==', id).get();
     // Check for documents
-    if (resp.docs.length == 0) {
+    if (resp.empty) {
         throw new Error('Error: The identification is not already in the database');
     }
 });

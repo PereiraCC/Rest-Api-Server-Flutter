@@ -9,14 +9,13 @@ export const inyectionSqlInputs = ( data : string) => {
         }
 }
 
-export const existsIdentification = async (id : string, collection : string) => {
+export const existsIdentification = async (id : string, collection : string, nameField: string) => {
 
     const documRef = db.collection(collection); 
 
     // Get data from database with id equal
-    const resp = await documRef.where('identification', '==', id).get();
+    const resp = await documRef.where(nameField, '==', id).get();
     
-
     // check for documents
     if( resp.docs.length > 0 ){
         throw new Error('Error: The identification is already in the database');
@@ -24,15 +23,29 @@ export const existsIdentification = async (id : string, collection : string) => 
 
 }
 
-export const existsbyId = async (id : string, collection : string) => {
+export const existsIDFirebase = async (id : string, collection : string) => {
+
+    const documRef = db.collection(collection); 
+
+    // Get data from database with id equal
+    const resp = await documRef.doc(id).get();
+    
+    // check for documents
+    if( !resp.exists ){
+        throw new Error('Error: The userID is not already in the database');
+    }
+
+}
+
+export const existsbyId = async (id : string, collection : string, nameField: string) => {
 
     const documRef = db.collection(collection);
 
     // Obtain all agents with id equal
-    const resp = await documRef.where('identification', '==', id).get();
+    const resp = await documRef.where(nameField, '==', id).get();
 
     // Check for documents
-    if( resp.docs.length == 0 ){
+    if( resp.empty ){
         throw new Error('Error: The identification is not already in the database');
     }
 
