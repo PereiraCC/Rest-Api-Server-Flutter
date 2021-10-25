@@ -2,12 +2,12 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 // Imports of express
 const express_1 = require("express");
-// import { check } from "express-validator";
+const express_validator_1 = require("express-validator");
 // Imports od controller, helpers and middlewares
 const products_1 = require("../controllers/products");
-// import { existsbyId, existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
-// import { fieldsValidation } from "../middlewares/inputs-validation";
-// import { validationJWT } from "../middlewares/validation-jwt";
+const db_validators_1 = require("../helpers/db-validators");
+const inputs_validation_1 = require("../middlewares/inputs-validation");
+const validation_jwt_1 = require("../middlewares/validation-jwt");
 // Instance of router
 const router = (0, express_1.Router)();
 // Get all agents
@@ -24,19 +24,16 @@ router.get('/:userID/:id', [
 ], products_1.getProductById);
 // Create new agent
 router.post('/', [
-// validationJWT,
-// check('identification','The identification field is required.').not().isEmpty(),
-// check('identification', 'The identification field must be numeric').isNumeric(),
-// // check('identification').custom(inyectionSqlInputs),
-// check('identification').custom( value => existsIdentification(value, 'agents')),
-// check('name','The name field is required.').not().isEmpty(),
-// // check('name').custom(inyectionSqlInputs),
-// check('lastname','The last name field is required.').not().isEmpty(),
-// check('email','The email field is required.').not().isEmpty(),
-// check('email','The email field is invalid.').isEmail(),
-// check('phone','The phone field is required.').not().isEmpty(),
-// check('phone', 'The phone field must be numeric').isNumeric(),
-// fieldsValidation
+    validation_jwt_1.validationJWT,
+    (0, express_validator_1.check)('code', 'The code field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('code', 'The code field must be numeric').isNumeric(),
+    (0, express_validator_1.check)('code').custom(value => (0, db_validators_1.existsIdentification)(value, 'products')),
+    (0, express_validator_1.check)('title', 'The title field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('price', 'The price field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('price', 'The price field must be numeric').isNumeric(),
+    (0, express_validator_1.check)('available', 'The available field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('available', 'The available field is invalid.').isBoolean(),
+    inputs_validation_1.fieldsValidation
 ], products_1.postProduct);
 // Update an agent
 router.put('/:id', [

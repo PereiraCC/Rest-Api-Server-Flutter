@@ -1,12 +1,12 @@
 // Imports of express
 import { Router } from "express";
-// import { check } from "express-validator";
+import { check } from "express-validator";
 
 // Imports od controller, helpers and middlewares
 import { getProducts, getProductById, postProduct, putProduct, deleteProduct } from "../controllers/products";
-// import { existsbyId, existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
-// import { fieldsValidation } from "../middlewares/inputs-validation";
-// import { validationJWT } from "../middlewares/validation-jwt";
+import { existsbyId, existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
+import { fieldsValidation } from "../middlewares/inputs-validation";
+import { validationJWT } from "../middlewares/validation-jwt";
 
 // Instance of router
 const router = Router();
@@ -27,19 +27,16 @@ router.get('/:userID/:id', [
 
 // Create new agent
 router.post('/', [
-    // validationJWT,
-    // check('identification','The identification field is required.').not().isEmpty(),
-    // check('identification', 'The identification field must be numeric').isNumeric(),
-    // // check('identification').custom(inyectionSqlInputs),
-    // check('identification').custom( value => existsIdentification(value, 'agents')),
-    // check('name','The name field is required.').not().isEmpty(),
-    // // check('name').custom(inyectionSqlInputs),
-    // check('lastname','The last name field is required.').not().isEmpty(),
-    // check('email','The email field is required.').not().isEmpty(),
-    // check('email','The email field is invalid.').isEmail(),
-    // check('phone','The phone field is required.').not().isEmpty(),
-    // check('phone', 'The phone field must be numeric').isNumeric(),
-    // fieldsValidation
+    validationJWT,
+    check('code', 'The code field is required.').not().isEmpty(),
+    check('code', 'The code field must be numeric').isNumeric(),
+    check('code').custom( value => existsIdentification(value, 'products')),
+    check('title', 'The title field is required.').not().isEmpty(),
+    check('price', 'The price field is required.').not().isEmpty(),
+    check('price', 'The price field must be numeric').isNumeric(),
+    check('available', 'The available field is required.').not().isEmpty(),
+    check('available', 'The available field is invalid.').isBoolean(),
+    fieldsValidation
 ], postProduct);
 
 // Update an agent
