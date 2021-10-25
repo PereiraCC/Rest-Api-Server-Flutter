@@ -27,12 +27,14 @@ router.post('/', [
     validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('code', 'The code field is required.').not().isEmpty(),
     (0, express_validator_1.check)('code', 'The code field must be numeric').isNumeric(),
-    (0, express_validator_1.check)('code').custom(value => (0, db_validators_1.existsIdentification)(value, 'products')),
+    (0, express_validator_1.check)('code').custom(value => (0, db_validators_1.existsIdentification)(value, 'products', 'code')),
     (0, express_validator_1.check)('title', 'The title field is required.').not().isEmpty(),
     (0, express_validator_1.check)('price', 'The price field is required.').not().isEmpty(),
     (0, express_validator_1.check)('price', 'The price field must be numeric').isNumeric(),
     (0, express_validator_1.check)('available', 'The available field is required.').not().isEmpty(),
     (0, express_validator_1.check)('available', 'The available field is invalid.').isBoolean(),
+    (0, express_validator_1.check)('userID', 'The userID field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('userID').custom(value => (0, db_validators_1.existsIDFirebase)(value, 'users')),
     inputs_validation_1.fieldsValidation
 ], products_1.postProduct);
 // Update an agent

@@ -4,7 +4,7 @@ import { check } from "express-validator";
 
 // Imports od controller, helpers and middlewares
 import { getProducts, getProductById, postProduct, putProduct, deleteProduct } from "../controllers/products";
-import { existsbyId, existsIdentification, inyectionSqlInputs } from "../helpers/db-validators";
+import { existsIdentification, existsIDFirebase } from "../helpers/db-validators";
 import { fieldsValidation } from "../middlewares/inputs-validation";
 import { validationJWT } from "../middlewares/validation-jwt";
 
@@ -30,12 +30,14 @@ router.post('/', [
     validationJWT,
     check('code', 'The code field is required.').not().isEmpty(),
     check('code', 'The code field must be numeric').isNumeric(),
-    check('code').custom( value => existsIdentification(value, 'products')),
+    check('code').custom( value => existsIdentification(value, 'products', 'code')),
     check('title', 'The title field is required.').not().isEmpty(),
     check('price', 'The price field is required.').not().isEmpty(),
     check('price', 'The price field must be numeric').isNumeric(),
     check('available', 'The available field is required.').not().isEmpty(),
     check('available', 'The available field is invalid.').isBoolean(),
+    check('userID', 'The userID field is required.').not().isEmpty(),
+    check('userID').custom( value => existsIDFirebase(value, 'users')),
     fieldsValidation
 ], postProduct);
 
