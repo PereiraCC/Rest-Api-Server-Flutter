@@ -25,7 +25,7 @@ router.get('/:id', [
 router.post('/', [
     check('identification','The identification field is required.').not().isEmpty(),
     check('identification', 'The identification field must be numeric').isNumeric(),
-    check('identification').custom( value => existsIdentification(value, 'users') ),
+    check('identification').custom( value => existsIdentification(value, 'users', 'identification') ),
     check('name','The name field is required.').not().isEmpty(),
     check('email','The email field is required.').not().isEmpty(),
     check('email','The email field is invalid.').isEmail(),
@@ -38,7 +38,7 @@ router.post('/', [
 router.put('/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
-    check('id').custom( value => existsbyId(value, 'users') ),
+    check('id').custom( value => existsbyId(value, 'users', 'identification') ),
     fieldsValidation
 ], putUser );
 
@@ -46,7 +46,7 @@ router.put('/:id', [
 router.delete('/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
-    check('id').custom( value => existsbyId(value, 'users') ),
+    check('id').custom( value => existsbyId(value, 'users', 'identification') ),
     fieldsValidation
 ], deleteUser );
 

@@ -22,7 +22,7 @@ router.get('/:id', [
 router.post('/', [
     (0, express_validator_1.check)('identification', 'The identification field is required.').not().isEmpty(),
     (0, express_validator_1.check)('identification', 'The identification field must be numeric').isNumeric(),
-    (0, express_validator_1.check)('identification').custom(value => (0, db_validators_1.existsIdentification)(value, 'users')),
+    (0, express_validator_1.check)('identification').custom(value => (0, db_validators_1.existsIdentification)(value, 'users', 'identification')),
     (0, express_validator_1.check)('name', 'The name field is required.').not().isEmpty(),
     (0, express_validator_1.check)('email', 'The email field is required.').not().isEmpty(),
     (0, express_validator_1.check)('email', 'The email field is invalid.').isEmail(),
@@ -34,14 +34,14 @@ router.post('/', [
 router.put('/:id', [
     validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
-    (0, express_validator_1.check)('id').custom(value => (0, db_validators_1.existsbyId)(value, 'users')),
+    (0, express_validator_1.check)('id').custom(value => (0, db_validators_1.existsbyId)(value, 'users', 'identification')),
     inputs_validation_1.fieldsValidation
 ], user_1.putUser);
 // Delete an agent (Status in false)
 router.delete('/:id', [
     validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
-    (0, express_validator_1.check)('id').custom(value => (0, db_validators_1.existsbyId)(value, 'users')),
+    (0, express_validator_1.check)('id').custom(value => (0, db_validators_1.existsbyId)(value, 'users', 'identification')),
     inputs_validation_1.fieldsValidation
 ], user_1.deleteUser);
 exports.default = router;
