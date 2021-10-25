@@ -1,12 +1,12 @@
 import { Request, Response } from "express";
 
 // Import db configuration, model and helpers
-// import db from '../db/config';
-// import Agent from "../models/agent";
-// import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
+import db from '../db/config';
+import Product from "../models/product";
+import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 
 // Reference to collection of agents in firebase
-// const agentRef = db.collection('agents');
+const productRef = db.collection('products');
 
 export const getProducts = async (req : Request, res : Response) => {
 
@@ -48,12 +48,20 @@ export const getProductById = async (req : Request, res : Response) => {
 export const postProduct = async (req : Request, res : Response) => {
 
     // Get data form JSON
-    // const { identification, name, lastname, email, phone, userID } = req.body;
+    const { code, title, price, available, userID } = req.body;
 
     try {
 
-        res.status(200).json({
-            msg: 'create a product'
+        const product = new Product(code, title, price, available, userID);
+        const data = product.fromJson();
+
+        const doc = await productRef.add(data);
+
+        // Send data
+        res.status(201).json({
+            ok: true,
+            uid : doc.id,
+            data
         });
 
     } catch (error) {

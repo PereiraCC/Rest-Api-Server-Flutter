@@ -8,14 +8,16 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __importDefault = (this && this.__importDefault) || function (mod) {
+    return (mod && mod.__esModule) ? mod : { "default": mod };
+};
 Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteProduct = exports.putProduct = exports.postProduct = exports.getProductById = exports.getProducts = void 0;
 // Import db configuration, model and helpers
-// import db from '../db/config';
-// import Agent from "../models/agent";
-// import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
+const config_1 = __importDefault(require("../db/config"));
+const product_1 = __importDefault(require("../models/product"));
 // Reference to collection of agents in firebase
-// const agentRef = db.collection('agents');
+const productRef = config_1.default.collection('products');
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         res.status(200).json({
@@ -49,10 +51,16 @@ const getProductById = (req, res) => __awaiter(void 0, void 0, void 0, function*
 exports.getProductById = getProductById;
 const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get data form JSON
-    // const { identification, name, lastname, email, phone, userID } = req.body;
+    const { code, title, price, available, userID } = req.body;
     try {
-        res.status(200).json({
-            msg: 'create a product'
+        const product = new product_1.default(code, title, price, available, userID);
+        const data = product.fromJson();
+        const doc = yield productRef.add(data);
+        // Send data
+        res.status(201).json({
+            ok: true,
+            uid: doc.id,
+            data
         });
     }
     catch (error) {
