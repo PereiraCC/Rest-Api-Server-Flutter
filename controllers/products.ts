@@ -199,7 +199,7 @@ export const deleteProduct = async (req : Request, res : Response) => {
     }
 }
 
-export const getProduct = async (id : string, userID : string ,status : boolean = true) => {
+export const getProduct = async (id : string, userID : string, status : boolean = true) => {
 
     // Obtain all products with status true / false (param) and id equal
     const resp = await productRef.where('status', '==', status)

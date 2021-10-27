@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 class Product {
     // Initial Product data
-    constructor(code, title, price, available, status, userID, imageURL = '') {
+    constructor(code, title, price, available, status, userID, profile_image = '') {
         this.code = code;
         this.title = title;
         this.price = price;
         this.available = available;
         this.status = status;
         this.userID = userID;
-        this.imageURL = imageURL;
+        this.profile_image = profile_image;
     }
     // Get data in format JSON
     fromJson() {
@@ -20,7 +20,7 @@ class Product {
             "available": this.available,
             "status": this.status,
             "userID": this.userID,
-            "imageURL": this.imageURL
+            "profile_image": this.profile_image
         };
     }
 }
