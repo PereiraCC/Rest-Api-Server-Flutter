@@ -16,12 +16,38 @@ exports.deleteProduct = exports.putProduct = exports.postProduct = exports.getPr
 // Import db configuration, model and helpers
 const config_1 = __importDefault(require("../db/config"));
 const product_1 = __importDefault(require("../models/product"));
+const returnDocsFirebase_1 = require("../helpers/returnDocsFirebase");
 // Reference to collection of agents in firebase
 const productRef = config_1.default.collection('products');
 const getProducts = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    const { userID } = req.params;
+    const { limit = 10, from = 1 } = req.query;
     try {
-        res.status(200).json({
-            msg: 'get all products'
+        // Get all data to the limit
+        const data = yield productRef
+            .orderBy('code')
+            .limit(from)
+            .where('userID', '==', userID).get();
+        // Verification if docs
+        if (from > data.docs.length || data.docs.length == 0) {
+            return res.status(200).json({
+                ok: true,
+                total: 0,
+                documents: []
+            });
+        }
+        // Get data with filters
+        const resp = yield productRef
+            .orderBy('code')
+            .limit(limit)
+            .startAt(data.docs[from - 1])
+            .where('status', '==', true)
+            .where('userID', '==', userID).get();
+        // Send data
+        return res.status(200).json({
+            ok: true,
+            total: resp.docs.length,
+            documents: (0, returnDocsFirebase_1.returnDocsFirebase)(resp)
         });
     }
     catch (error) {

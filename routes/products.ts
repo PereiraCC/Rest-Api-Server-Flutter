@@ -13,8 +13,8 @@ const router = Router();
 
 // Get all agents
 router.get('/:userID', [
-    // check('userID', 'The user ID field is required.').not().isEmpty(),
-    // fieldsValidation
+    check('userID', 'The user ID field is required.').not().isEmpty(),
+    fieldsValidation
 ], getProducts);
 
 // Get an agent by id

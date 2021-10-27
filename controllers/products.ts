@@ -9,11 +9,40 @@ import { returnDocsFirebase } from "../helpers/returnDocsFirebase";
 const productRef = db.collection('products');
 
 export const getProducts = async (req : Request, res : Response) => {
+    
+    const { userID } = req.params;
+    const { limit = 10, from = 1 } = req.query;
 
     try {
+        
+        // Get all data to the limit
+        const data = await productRef
+            .orderBy('code')
+            .limit(from as number)
+            .where('userID', '==', userID).get();
 
-        res.status(200).json({
-            msg: 'get all products'
+        // Verification if docs
+        if(from as number > data.docs.length || data.docs.length == 0) {
+            return res.status(200).json({
+                ok: true,
+                total : 0,
+                documents: []
+            });
+        }
+
+        // Get data with filters
+        const resp = await productRef
+            .orderBy('code')
+            .limit(limit as number)
+            .startAt(data.docs[from as number - 1])
+            .where('status', '==', true)
+            .where('userID', '==', userID).get();
+
+        // Send data
+        return res.status(200).json({
+            ok: true,
+            total : resp.docs.length,
+            documents : returnDocsFirebase(resp)
         });
 
     } catch (error) {
