@@ -120,14 +120,38 @@ export const postProduct = async (req : Request, res : Response) => {
 export const putProduct = async (req : Request, res : Response) => {
 
     // Get id param and data
-    // const { id } = req.params;
-    // const { ...data } = req.body;
+    const { userID, id } = req.params;
+    const { ...data } = req.body;
 
     try {
 
-        res.status(200).json({
-            msg: 'put a product'
-        });
+       // Obtain the identification document
+       let docRef = await getProduct(id, userID);
+
+       // Verification if there is an agent
+       if(!docRef?.exists){
+           return res.status(400).json({
+               msg: 'Error The product is not already in the database'
+           }); 
+       }
+
+       // Fields: identification and status 
+       data.code = docRef?.data().code;
+       data.userID = docRef?.data().userID;
+       data.status = true;
+
+       // Update the document with new data
+       await productRef.doc(docRef?.id).update(data);
+
+       // Obtain the new data
+       docRef = await getProduct(id, userID);
+
+       // Send data
+       return res.status(200).json({
+           ok: true,
+           uid : docRef?.id,
+           agent : docRef?.data()
+       });
 
     } catch (error) {
         console.log(error);
@@ -156,19 +180,20 @@ export const deleteProduct = async (req : Request, res : Response) => {
     }
 }
 
-// export const getAgent = async (id : String, status = true) => {
+export const getProduct = async (id : string, userID : string ,status : boolean = true) => {
 
-//     // Obtain all agents with status true / false (param) and id equal
-//     const resp = await agentRef.where('status', '==', status)
-//                                    .where('identification','==', id).get();
+    // Obtain all agents with status true / false (param) and id equal
+    const resp = await productRef.where('status', '==', status)
+                                 .where('code','==', id)
+                                 .where('userID','==', userID).get();
 
-//     // From the list obtain documento with id equal
-//     const docRef = resp.docs.find((doc) => {
-//         if(doc.data().identification === id){
-//             return doc;
-//         }
-//     });
+    // From the list obtain documento with id equal
+    const docRef = resp.docs.find((doc) => {
+        if(doc.data().code === id){
+            return doc;
+        }
+    });
 
-//     return docRef;
+    return docRef;
 
-// }
+}

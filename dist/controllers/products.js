@@ -8,11 +8,22 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteProduct = exports.putProduct = exports.postProduct = exports.getProductById = exports.getProducts = void 0;
+exports.getProduct = exports.deleteProduct = exports.putProduct = exports.postProduct = exports.getProductById = exports.getProducts = void 0;
 // Import db configuration, model and helpers
 const config_1 = __importDefault(require("../db/config"));
 const product_1 = __importDefault(require("../models/product"));
@@ -112,11 +123,30 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.postProduct = postProduct;
 const putProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get id param and data
-    // const { id } = req.params;
-    // const { ...data } = req.body;
+    const { userID, id } = req.params;
+    const data = __rest(req.body, []);
     try {
-        res.status(200).json({
-            msg: 'put a product'
+        // Obtain the identification document
+        let docRef = yield (0, exports.getProduct)(id, userID);
+        // Verification if there is an agent
+        if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
+            return res.status(400).json({
+                msg: 'Error The product is not already in the database'
+            });
+        }
+        // Fields: identification and status 
+        data.code = docRef === null || docRef === void 0 ? void 0 : docRef.data().code;
+        data.userID = docRef === null || docRef === void 0 ? void 0 : docRef.data().userID;
+        data.status = true;
+        // Update the document with new data
+        yield productRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update(data);
+        // Obtain the new data
+        docRef = yield (0, exports.getProduct)(id, userID);
+        // Send data
+        return res.status(200).json({
+            ok: true,
+            uid: docRef === null || docRef === void 0 ? void 0 : docRef.id,
+            agent: docRef === null || docRef === void 0 ? void 0 : docRef.data()
         });
     }
     catch (error) {
@@ -143,16 +173,18 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
     }
 });
 exports.deleteProduct = deleteProduct;
-// export const getAgent = async (id : String, status = true) => {
-//     // Obtain all agents with status true / false (param) and id equal
-//     const resp = await agentRef.where('status', '==', status)
-//                                    .where('identification','==', id).get();
-//     // From the list obtain documento with id equal
-//     const docRef = resp.docs.find((doc) => {
-//         if(doc.data().identification === id){
-//             return doc;
-//         }
-//     });
-//     return docRef;
-// }
+const getProduct = (id, userID, status = true) => __awaiter(void 0, void 0, void 0, function* () {
+    // Obtain all agents with status true / false (param) and id equal
+    const resp = yield productRef.where('status', '==', status)
+        .where('code', '==', id)
+        .where('userID', '==', userID).get();
+    // From the list obtain documento with id equal
+    const docRef = resp.docs.find((doc) => {
+        if (doc.data().code === id) {
+            return doc;
+        }
+    });
+    return docRef;
+});
+exports.getProduct = getProduct;
 //# sourceMappingURL=products.js.map

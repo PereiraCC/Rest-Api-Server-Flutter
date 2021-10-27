@@ -4,7 +4,7 @@ import { check } from "express-validator";
 
 // Imports od controller, helpers and middlewares
 import { getProducts, getProductById, postProduct, putProduct, deleteProduct } from "../controllers/products";
-import { existsIdentification, existsIDFirebase } from "../helpers/db-validators";
+import { existsbyId, existsIdentification, existsIDFirebase } from "../helpers/db-validators";
 import { fieldsValidation } from "../middlewares/inputs-validation";
 import { validationJWT } from "../middlewares/validation-jwt";
 
@@ -14,6 +14,7 @@ const router = Router();
 // Get all agents
 router.get('/:userID', [
     check('userID', 'The user ID field is required.').not().isEmpty(),
+    check('userID').custom( value => existsIDFirebase(value, 'users')),
     fieldsValidation
 ], getProducts);
 
@@ -22,6 +23,7 @@ router.get('/:userID/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
     check('userID', 'The user ID field is required.').not().isEmpty(),
+    check('userID').custom( value => existsIDFirebase(value, 'users')),
     fieldsValidation
 ], getProductById );
 
@@ -42,11 +44,13 @@ router.post('/', [
 ], postProduct);
 
 // Update an agent
-router.put('/:id', [
-    // validationJWT,
-    // check('id', 'The identification parameter must be numeric.').isNumeric(),
-    // check('id').custom(value => existsbyId(value, 'agents')),
-    // fieldsValidation
+router.put('/:userID/:id', [
+    validationJWT,
+    check('id', 'The identification parameter must be numeric.').isNumeric(),
+    check('id').custom(value => existsbyId(value, 'products', 'code')),
+    check('userID', 'The userID field is required.').not().isEmpty(),
+    check('userID').custom( value => existsIDFirebase(value, 'users')),
+    fieldsValidation
 ], putProduct );
 
 // Delete an agent (Status in false)
