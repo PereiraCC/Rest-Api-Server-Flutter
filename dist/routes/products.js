@@ -17,10 +17,10 @@ router.get('/:userID', [
 ], products_1.getProducts);
 // Get an agent by id
 router.get('/:userID/:id', [
-// validationJWT,
-// check('id', 'The identification parameter must be numeric.').isNumeric(),
-// check('userID', 'The user ID field is required.').not().isEmpty(),
-// fieldsValidation
+    validation_jwt_1.validationJWT,
+    (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
+    (0, express_validator_1.check)('userID', 'The user ID field is required.').not().isEmpty(),
+    inputs_validation_1.fieldsValidation
 ], products_1.getProductById);
 // Create new agent
 router.post('/', [

@@ -57,13 +57,29 @@ export const getProducts = async (req : Request, res : Response) => {
 export const getProductById = async (req : Request, res : Response) => {
 
     // Get ID param 
-    // const { id, userID } = req.params;
+    const { id, userID } = req.params;
 
     try {
 
-        res.status(200).json({
-            msg: 'get a product',
-            // id, userID
+        // Get all agents with status true and id equal
+        const resp = await productRef.where('status', '==', true)
+                                     .where('code','==', id)
+                                     .where('userID', '==', userID).get();
+
+        // Verification if there are documents
+        if( resp.empty ){
+            return res.status(404).json({
+                msg: 'Product with that ID not found in the database.'
+            });
+        }
+
+        // Processing collection data
+        const documents = returnDocsFirebase(resp);
+
+        // Send data
+        return res.status(200).json({
+            ok: true,
+            documents
         });
 
     } catch (error) {
