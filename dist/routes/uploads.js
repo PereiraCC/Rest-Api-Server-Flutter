@@ -16,7 +16,7 @@ router.put('/:collection/:id', [
     validation_jwt_1.validationJWT,
     files_validation_1.fileValidationUpload,
     (0, express_validator_1.check)('id', 'The id parameter is not numeric').isNumeric(),
-    (0, express_validator_1.check)('collection').custom(c => (0, db_validators_1.allowableCollections)(c, ['agents', 'users'])),
+    (0, express_validator_1.check)('collection').custom(c => (0, db_validators_1.allowableCollections)(c, ['agents', 'users', 'products'])),
     inputs_validation_1.fieldsValidation
 ], uploads_1.uploadFile);
 exports.default = router;

@@ -29,11 +29,13 @@ const agent_1 = require("./agent");
 const files_validators_1 = require("../helpers/files-validators");
 const user_1 = require("../controllers/user");
 const upload_image_1 = require("../helpers/upload-image");
+const products_1 = require("./products");
 const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
     try {
         // Get params
         const { id, collection } = req.params;
+        const { userID = '' } = req.query;
         // Reference to collection of agents in firebase
         let collectionRef;
         let docRef;
@@ -59,6 +61,22 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
                     return res.status(400).json({
                         msg: 'Error the user is not already in the database'
+                    });
+                }
+                break;
+            case 'products':
+                if (userID === '') {
+                    return res.status(400).json({
+                        msg: 'Error the userID is required'
+                    });
+                }
+                // Set collection and get data
+                collectionRef = config_1.default.collection('products');
+                docRef = yield (0, products_1.getProduct)(id, userID);
+                // Verification id there are documents
+                if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
+                    return res.status(400).json({
+                        msg: 'Error the product is not already in the database'
                     });
                 }
                 break;
@@ -93,6 +111,9 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 case 'agents':
                     resp = yield getDataAgent(id);
                     return res.status(200).json(resp);
+                case 'products':
+                    resp = yield getDataProduct(id, userID);
+                    return res.status(200).json(resp);
                 case 'users':
                     docRef = yield (0, user_1.getUser)(id);
                     const _b = docRef === null || docRef === void 0 ? void 0 : docRef.data(), { pass, status } = _b, data = __rest(_b, ["pass", "status"]);
@@ -121,6 +142,13 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.uploadFile = uploadFile;
 const getDataAgent = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const docRef = yield (0, agent_1.getAgent)(id);
+    return {
+        ok: true,
+        data: docRef === null || docRef === void 0 ? void 0 : docRef.data()
+    };
+});
+const getDataProduct = (id, userID) => __awaiter(void 0, void 0, void 0, function* () {
+    const docRef = yield (0, products_1.getProduct)(id, userID);
     return {
         ok: true,
         data: docRef === null || docRef === void 0 ? void 0 : docRef.data()
