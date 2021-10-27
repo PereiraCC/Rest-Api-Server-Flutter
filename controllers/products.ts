@@ -164,13 +164,32 @@ export const putProduct = async (req : Request, res : Response) => {
 export const deleteProduct = async (req : Request, res : Response) => {
 
     // Get id param
-    // const { id } = req.params;
+    const { userID, id } = req.params;
 
     try {
 
-        res.status(200).json({
-            msg: 'delete a product'
-        });
+        // Obtain the identification document
+       let docRef = await getProduct(id, userID);
+
+       // Verification if there is an agent
+       if(!docRef?.exists){
+           return res.status(400).json({
+               msg: 'Error The product is not already in the database'
+           }); 
+       }
+
+       // Update the document with new data
+       await productRef.doc(docRef?.id).update({ status : false});
+
+       // Obtain the new data
+       docRef = await getProduct(id, userID, false);
+
+       // Send data
+       return res.status(200).json({
+           ok: true,
+           uid : docRef?.id,
+           agent : docRef?.data()
+       });
 
     } catch (error) {
         console.log(error);
@@ -182,7 +201,7 @@ export const deleteProduct = async (req : Request, res : Response) => {
 
 export const getProduct = async (id : string, userID : string ,status : boolean = true) => {
 
-    // Obtain all agents with status true / false (param) and id equal
+    // Obtain all products with status true / false (param) and id equal
     const resp = await productRef.where('status', '==', status)
                                  .where('code','==', id)
                                  .where('userID','==', userID).get();

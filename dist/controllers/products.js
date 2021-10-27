@@ -159,10 +159,25 @@ const putProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
 exports.putProduct = putProduct;
 const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get id param
-    // const { id } = req.params;
+    const { userID, id } = req.params;
     try {
-        res.status(200).json({
-            msg: 'delete a product'
+        // Obtain the identification document
+        let docRef = yield (0, exports.getProduct)(id, userID);
+        // Verification if there is an agent
+        if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
+            return res.status(400).json({
+                msg: 'Error The product is not already in the database'
+            });
+        }
+        // Update the document with new data
+        yield productRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update({ status: false });
+        // Obtain the new data
+        docRef = yield (0, exports.getProduct)(id, userID, false);
+        // Send data
+        return res.status(200).json({
+            ok: true,
+            uid: docRef === null || docRef === void 0 ? void 0 : docRef.id,
+            agent: docRef === null || docRef === void 0 ? void 0 : docRef.data()
         });
     }
     catch (error) {
@@ -174,7 +189,7 @@ const deleteProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* 
 });
 exports.deleteProduct = deleteProduct;
 const getProduct = (id, userID, status = true) => __awaiter(void 0, void 0, void 0, function* () {
-    // Obtain all agents with status true / false (param) and id equal
+    // Obtain all products with status true / false (param) and id equal
     const resp = yield productRef.where('status', '==', status)
         .where('code', '==', id)
         .where('userID', '==', userID).get();

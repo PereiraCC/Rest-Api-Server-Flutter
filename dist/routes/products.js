@@ -49,11 +49,13 @@ router.put('/:userID/:id', [
     inputs_validation_1.fieldsValidation
 ], products_1.putProduct);
 // Delete an agent (Status in false)
-router.delete('/:id', [
-// validationJWT,
-// check('id', 'The identification parameter must be numeric.').isNumeric(),
-// check('id').custom(value => existsbyId(value, 'agents')),
-// fieldsValidation
+router.delete('/:userID/:id', [
+    validation_jwt_1.validationJWT,
+    (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
+    (0, express_validator_1.check)('id').custom(value => (0, db_validators_1.existsbyId)(value, 'products', 'code')),
+    (0, express_validator_1.check)('userID', 'The userID field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('userID').custom(value => (0, db_validators_1.existsIDFirebase)(value, 'users')),
+    inputs_validation_1.fieldsValidation
 ], products_1.deleteProduct);
 exports.default = router;
 //# sourceMappingURL=products.js.map

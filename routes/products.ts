@@ -54,11 +54,13 @@ router.put('/:userID/:id', [
 ], putProduct );
 
 // Delete an agent (Status in false)
-router.delete('/:id', [
-    // validationJWT,
-    // check('id', 'The identification parameter must be numeric.').isNumeric(),
-    // check('id').custom(value => existsbyId(value, 'agents')),
-    // fieldsValidation
+router.delete('/:userID/:id', [
+    validationJWT,
+    check('id', 'The identification parameter must be numeric.').isNumeric(),
+    check('id').custom(value => existsbyId(value, 'products', 'code')),
+    check('userID', 'The userID field is required.').not().isEmpty(),
+    check('userID').custom( value => existsIDFirebase(value, 'users')),
+    fieldsValidation
 ], deleteProduct );
 
 
