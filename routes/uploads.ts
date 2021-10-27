@@ -17,7 +17,7 @@ router.put('/:collection/:id', [
     validationJWT,
     fileValidationUpload,
     check('id', 'The id parameter is not numeric').isNumeric(),
-    check('collection').custom( c => allowableCollections(c, ['agents', 'users'])),
+    check('collection').custom( c => allowableCollections(c, ['agents', 'users', 'products'])),
     fieldsValidation
 ], uploadFile);
 

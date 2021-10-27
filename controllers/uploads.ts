@@ -7,6 +7,7 @@ import { getAgent } from './agent';
 import { extensionValidation } from '../helpers/files-validators';
 import { getUser } from '../controllers/user';
 import { uploadImage } from '../helpers/upload-image';
+import { getProduct } from './products';
 
 export const uploadFile = async (req : Request, res : Response) => {
 
@@ -14,6 +15,7 @@ export const uploadFile = async (req : Request, res : Response) => {
 
         // Get params
         const { id, collection } = req.params;
+        const { userID = '' }  = req.query;
 
         // Reference to collection of agents in firebase
         let collectionRef : any;
@@ -45,6 +47,26 @@ export const uploadFile = async (req : Request, res : Response) => {
                 if(!docRef?.exists){
                     return res.status(400).json({
                         msg: 'Error the user is not already in the database'
+                    }); 
+                }
+                break;
+
+            case 'products':
+
+                if(userID === ''){
+                    return res.status(400).json({
+                        msg: 'Error the userID is required'
+                    });
+                }
+
+                // Set collection and get data
+                collectionRef = db.collection('products');
+                docRef = await getProduct(id, userID as string);
+                
+                // Verification id there are documents
+                if(!docRef?.exists){
+                    return res.status(400).json({
+                        msg: 'Error the product is not already in the database'
                     }); 
                 }
                 break;
@@ -87,6 +109,10 @@ export const uploadFile = async (req : Request, res : Response) => {
                     resp = await getDataAgent(id);
                     return res.status(200).json(resp);
 
+                case 'products':
+                    resp = await getDataProduct(id, userID as string);
+                    return res.status(200).json(resp);
+
                 case 'users':
                     docRef = await getUser(id);
                     const { pass, status, ...data } = docRef?.data();
@@ -117,6 +143,15 @@ export const uploadFile = async (req : Request, res : Response) => {
 const getDataAgent = async (id : string) => {
 
     const docRef = await getAgent(id);
+    return {
+        ok: true,
+        data : docRef?.data()
+    };
+}
+
+const getDataProduct = async (id : string, userID : string) => {
+
+    const docRef = await getProduct(id, userID);
     return {
         ok: true,
         data : docRef?.data()

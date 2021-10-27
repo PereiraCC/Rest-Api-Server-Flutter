@@ -31,7 +31,7 @@ router.post('/', [
     check('identification','The identification field is required.').not().isEmpty(),
     check('identification', 'The identification field must be numeric').isNumeric(),
     // check('identification').custom(inyectionSqlInputs),
-    check('identification').custom( value => existsIdentification(value, 'agents')),
+    check('identification').custom( value => existsIdentification(value, 'agents', 'identification')),
     check('name','The name field is required.').not().isEmpty(),
     // check('name').custom(inyectionSqlInputs),
     check('lastname','The last name field is required.').not().isEmpty(),
@@ -46,7 +46,7 @@ router.post('/', [
 router.put('/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
-    check('id').custom(value => existsbyId(value, 'agents')),
+    check('id').custom(value => existsbyId(value, 'agents', 'identification')),
     fieldsValidation
 ], putAgent );
 
@@ -54,7 +54,7 @@ router.put('/:id', [
 router.delete('/:id', [
     validationJWT,
     check('id', 'The identification parameter must be numeric.').isNumeric(),
-    check('id').custom(value => existsbyId(value, 'agents')),
+    check('id').custom(value => existsbyId(value, 'agents', 'identification')),
     fieldsValidation
 ], deleteAgent );
 

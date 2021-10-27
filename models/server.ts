@@ -2,10 +2,11 @@ import express, { Application } from 'express';
 import cors from 'cors';
 import fileUpload from 'express-fileupload';
 
-import authRoute   from '../routes/auth';
-import agentRoute  from '../routes/agent';
-import userRoute   from '../routes/user';
-import uploadRoute from '../routes/uploads';
+import authRoute     from '../routes/auth';
+import userRoute     from '../routes/user';
+import agentRoute    from '../routes/agent';
+import uploadRoute   from '../routes/uploads';
+import productsRoute from '../routes/products';
 
 
 class Server {
@@ -14,10 +15,11 @@ class Server {
     private app : Application;
     private port : string;
     private apiPaths = {
-        auth:    '/api/auth',
-        users:   '/api/users',
-        agents:  '/api/agents',
-        uploads: '/api/uploads'
+        agents   : '/api/agents',
+        auth     : '/api/auth',
+        products : '/api/products',
+        uploads  : '/api/uploads',
+        users    : '/api/users',
     };
 
     constructor() {
@@ -52,10 +54,11 @@ class Server {
 
     routes() {
         // Set agents route
-        this.app.use( this.apiPaths.auth,    authRoute );
-        this.app.use( this.apiPaths.agents,  agentRoute );
-        this.app.use( this.apiPaths.users,   userRoute );
-        this.app.use( this.apiPaths.uploads, uploadRoute );
+        this.app.use( this.apiPaths.auth,     authRoute     );
+        this.app.use( this.apiPaths.agents,   agentRoute    );
+        this.app.use( this.apiPaths.users,    userRoute     );
+        this.app.use( this.apiPaths.uploads,  uploadRoute   );
+        this.app.use( this.apiPaths.products, productsRoute );
     }
 
     listen() {
