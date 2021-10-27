@@ -52,7 +52,7 @@ export const postProduct = async (req : Request, res : Response) => {
 
     try {
 
-        const product = new Product(code, title, price, available, userID);
+        const product = new Product(code, title, price, available, true , userID);
         const data = product.fromJson();
 
         const doc = await productRef.add(data);

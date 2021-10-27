@@ -53,7 +53,7 @@ const postProduct = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     // Get data form JSON
     const { code, title, price, available, userID } = req.body;
     try {
-        const product = new product_1.default(code, title, price, available, userID);
+        const product = new product_1.default(code, title, price, available, true, userID);
         const data = product.fromJson();
         const doc = yield productRef.add(data);
         // Send data
