@@ -7,21 +7,21 @@ mocha.describe('GET /api/agents', () => {
 
     mocha.it('respond with json containing a list of all users', done => {
         request(API)
-            .get('/api/agents')
+            .get('/api/agents/3gJdiCZNajh57AiGq9mm')
             .set('Accept', 'application/json')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(200, done);
     });
 });
 
-mocha.describe('GET:id /api/agents/:id', () => {
+mocha.describe('GET:id /api/agents/:userID:id', () => {
 
     // all good
     mocha.it('respond with json containing a single agent', done => {
         request(API)
-            .get('/api/agents/004')
+            .get('/api/agents/3gJdiCZNajh57AiGq9mm/001')
             .set('Accept', 'application/json')
-            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(200, done);
     });
@@ -29,9 +29,9 @@ mocha.describe('GET:id /api/agents/:id', () => {
     // Agent not found 
     mocha.it('respond with json "msg: Agent with that ID not found in the database." when user does not exists', done => {
         request(API)
-            .get('/api/agents/058')
+            .get('/api/agents/3gJdiCZNajh57AiGq9mm/058')
             .set('Accept', 'application/json')
-            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(404)
             .expect({
@@ -47,7 +47,7 @@ mocha.describe('GET:id /api/agents/:id', () => {
     mocha.it('reply with json "msg: No token" when there is no token', done => {
 
         request(API)
-            .get('/api/agents/004')
+            .get('/api/agents/3gJdiCZNajh57AiGq9mm/004')
             .set('Accept', 'application/json')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(401)
@@ -64,9 +64,9 @@ mocha.describe('GET:id /api/agents/:id', () => {
     mocha.it('reply with json "msg: Invalid token" when there is Invalid token', done => {
 
         request(API)
-            .get('/api/agents/004')
+            .get('/api/agents/3gJdiCZNajh57AiGq9mm/004')
             .set('Accept', 'application/json')
-            .set('x-token', 'bad000eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .set('x-token', 'bad')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(401)
             .expect({
@@ -82,9 +82,9 @@ mocha.describe('GET:id /api/agents/:id', () => {
     mocha.it('reply with json "msg: The identification parameter must be numeric." when id param is not numeric', done => {
 
         request(API)
-            .get('/api/agents/05ff')
+            .get('/api/agents/3gJdiCZNajh57AiGq9mm/05ff')
             .set('Accept', 'application/json')
-            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(400)
             .expect({
@@ -112,7 +112,8 @@ mocha.describe('POST /api/agents', () => {
         name           : "testing",
         lastname       : "testing",
         email          : "test0@test.com",
-        phone          : "88886666"
+        phone          : "88886666",
+        userID         : "3gJdiCZNajh57AiGq9mm"
     };
 
     // Create new Agent
@@ -121,7 +122,7 @@ mocha.describe('POST /api/agents', () => {
         request(API)
             .post('/api/agents')
             .set('Accept', 'application/json')
-            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
             .send(data)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(201)
@@ -156,7 +157,7 @@ mocha.describe('POST /api/agents', () => {
         request(API)
             .post('/api/agents')
             .set('Accept', 'application/json')
-            .set('x-token', 'bad000eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .set('x-token', 'bad')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .send(data)
             .expect(401)
@@ -178,13 +179,14 @@ mocha.describe('POST /api/agents', () => {
                 name           : "testing",
                 lastname       : "testing",
                 email          : "test0@test.com",
-                phone          : "88886666"
+                phone          : "88886666",
+                userID         : "3gJdiCZNajh57AiGq9mm"
             };
     
             request(API)
                 .post('/api/agents')
                 .set('Accept', 'application/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .send(newData)
                 .expect(400)
@@ -221,13 +223,14 @@ mocha.describe('POST /api/agents', () => {
                 name           : "testing",
                 lastname       : "testing",
                 email          : "test0@test.com",
-                phone          : "88886666"
+                phone          : "88886666",
+                userID         : "3gJdiCZNajh57AiGq9mm"
             };
 
             request(API)
                 .post('/api/agents')
                 .set('Accept', 'applicacion/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .send(newData)
                 .expect(400)
                 .expect({
@@ -254,13 +257,14 @@ mocha.describe('POST /api/agents', () => {
                 name           : "testing",
                 lastname       : "testing",
                 email          : "test0@test.com",
-                phone          : "88886666"
+                phone          : "88886666",
+                userID         : "3gJdiCZNajh57AiGq9mm"
             };
 
             request(API)
                 .post('/api/agents')
                 .set('Accept', 'applicacion/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .send(newData)
                 .expect(400)
                 .expect({
@@ -289,13 +293,14 @@ mocha.describe('POST /api/agents', () => {
                 identification : "085",
                 lastname       : "testing",
                 email          : "test0@test.com",
-                phone          : "88886666"
+                phone          : "88886666",
+                userID         : "3gJdiCZNajh57AiGq9mm"
             };
     
             request(API)
                 .post('/api/agents')
                 .set('Accept', 'application/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .send(newData)
                 .expect(400)
@@ -321,13 +326,14 @@ mocha.describe('POST /api/agents', () => {
                 identification : "085",
                 name           : "testing",
                 email          : "test0@test.com",
-                phone          : "88886666"
+                phone          : "88886666",
+                userID         : "3gJdiCZNajh57AiGq9mm"
             };
 
             request(API)
                 .post('/api/agents')
                 .set('Accept', 'applicacion/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .send(newData)
                 .expect(400)
                 .expect({
@@ -356,13 +362,14 @@ mocha.describe('POST /api/agents', () => {
                 identification : "085",
                 name           : "testing",
                 lastname       : "testing",
-                phone          : "88886666"
+                phone          : "88886666",
+                userID         : "3gJdiCZNajh57AiGq9mm"
             };
     
             request(API)
                 .post('/api/agents')
                 .set('Accept', 'application/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .send(newData)
                 .expect(400)
@@ -394,13 +401,14 @@ mocha.describe('POST /api/agents', () => {
                 name           : "testing",
                 lastname       : "testing",
                 email          : "test0testcom",
-                phone          : "88886666"
+                phone          : "88886666",
+                userID         : "3gJdiCZNajh57AiGq9mm"
             };
 
             request(API)
                 .post('/api/agents')
                 .set('Accept', 'applicacion/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .send(newData)
                 .expect(400)
                 .expect({
@@ -431,12 +439,13 @@ mocha.describe('POST /api/agents', () => {
                 name           : "testing",
                 lastname       : "testing",
                 email          : "test0@test.com",
+                userID         : "3gJdiCZNajh57AiGq9mm"
             };
     
             request(API)
                 .post('/api/agents')
                 .set('Accept', 'application/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .expect('Content-Type', 'application/json; charset=utf-8')
                 .send(newData)
                 .expect(400)
@@ -468,13 +477,14 @@ mocha.describe('POST /api/agents', () => {
                 name           : "testing",
                 lastname       : "testing",
                 email          : "test0@test.com",
-                phone          : "88886666dad"
+                phone          : "88886666dad",
+                userID         : "3gJdiCZNajh57AiGq9mm"
             };
 
             request(API)
                 .post('/api/agents')
                 .set('Accept', 'applicacion/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .send(newData)
                 .expect(400)
                 .expect({
@@ -483,6 +493,82 @@ mocha.describe('POST /api/agents', () => {
                             "value": "88886666dad",
                             "msg": "The phone field must be numeric",
                             "param": "phone",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                })
+        });
+
+    });
+
+    mocha.describe('Error message of the userID field', () => {
+
+        
+        mocha.it('replay with json errors message of the userID field null', done => {
+
+            const newData = {
+                identification : "085",
+                name           : "testing",
+                lastname       : "testing",
+                email          : "test0@test.com",
+                phone          : "88884444"
+            };
+
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'application/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "msg": "The user ID field is required.",
+                            "param": "userID",
+                            "location": "body"
+                        },
+                        {
+                            "msg": "Error: The userID is not already in the database",
+                            "param": "userID",
+                            "location": "body"
+                        }
+                    ]
+                })
+                .end( err => {
+                    if(err) return done(err);
+                    done();
+                })
+        });
+
+        mocha.it('replay with json errors message of the userID field invalid', done => {
+
+            const newData = {
+                identification : "085",
+                name           : "testing",
+                lastname       : "testing",
+                email          : "test0@test.com",
+                phone          : "88884444",
+                userID         : "bad"
+            };
+
+            request(API)
+                .post('/api/agents')
+                .set('Accept', 'application/json')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
+                .expect('Content-Type', 'application/json; charset=utf-8')
+                .send(newData)
+                .expect(400)
+                .expect({
+                    "errors": [
+                        {
+                            "value": "bad",
+                            "msg": "Error: The userID is not already in the database",
+                            "param": "userID",
                             "location": "body"
                         }
                     ]
@@ -507,9 +593,9 @@ mocha.describe('PUT /api/agents:id', () => {
     mocha.it('replay json with new data agent update', done => {
 
         request(API)
-            .put('/api/agents/004')
+            .put('/api/agents/3gJdiCZNajh57AiGq9mm/000')
             .set('Accept', 'application/json')
-            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
             .send(data)
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(200)
@@ -523,7 +609,7 @@ mocha.describe('PUT /api/agents:id', () => {
     mocha.it('reply with json "msg: No token" when there is no token', done => {
 
         request(API)
-            .put('/api/agents/004')
+            .put('/api/agents/3gJdiCZNajh57AiGq9mm/000')
             .set('Accept', 'application/json')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .send(data)
@@ -541,9 +627,9 @@ mocha.describe('PUT /api/agents:id', () => {
     mocha.it('reply with json "msg: Invalid token" when there is Invalid token', done => {
 
         request(API)
-            .put('/api/agents/004')
+            .put('/api/agents/3gJdiCZNajh57AiGq9mm/000')
             .set('Accept', 'application/json')
-            .set('x-token', 'bad000eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .set('x-token', 'bad')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .send(data)
             .expect(401)
@@ -562,9 +648,9 @@ mocha.describe('PUT /api/agents:id', () => {
         mocha.it('replay with json errors message of the identification param null', done => {
     
             request(API)
-                .put('/api/agents')
+                .put('/api/agents/3gJdiCZNajh57AiGq9mm')
                 .set('Accept', 'application/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .expect('Content-Type', 'text/html; charset=utf-8')
                 .send(data)
                 .expect(404)
@@ -578,9 +664,9 @@ mocha.describe('PUT /api/agents:id', () => {
         mocha.it('replay with json errors message of the identification param is not numeric', done => {
 
             request(API)
-                .put('/api/agents/45sd')
+                .put('/api/agents/3gJdiCZNajh57AiGq9mm/45sd')
                 .set('Accept', 'applicacion/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .send(data)
                 .expect(400)
                 .expect({
@@ -609,9 +695,9 @@ mocha.describe('PUT /api/agents:id', () => {
         mocha.it('replay with json errors message of the identification field when id is already in database', done => {
 
             request(API)
-                .put('/api/agents/088')
+                .put('/api/agents/3gJdiCZNajh57AiGq9mm/088')
                 .set('Accept', 'applicacion/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .send(data)
                 .expect(400)
                 .expect({
@@ -631,7 +717,6 @@ mocha.describe('PUT /api/agents:id', () => {
         });
     });
 
-
 });
 
 mocha.describe('DELETE /api/agents:id', () => {
@@ -640,9 +725,9 @@ mocha.describe('DELETE /api/agents:id', () => {
     mocha.it('replay json with new data agent delete', done => {
 
         request(API)
-            .delete('/api/agents/007')
+            .delete('/api/agents/3gJdiCZNajh57AiGq9mm/000')
             .set('Accept', 'application/json')
-            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+            .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(200)
             .end(err => {
@@ -651,11 +736,11 @@ mocha.describe('DELETE /api/agents:id', () => {
             })
     });
 
-    // No token
+    // // No token
     mocha.it('reply with json "msg: No token" when there is no token', done => {
 
         request(API)
-            .delete('/api/agents/007')
+            .delete('/api/agents/3gJdiCZNajh57AiGq9mm/017')
             .set('Accept', 'application/json')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(401)
@@ -672,9 +757,9 @@ mocha.describe('DELETE /api/agents:id', () => {
     mocha.it('reply with json "msg: Invalid token" when there is Invalid token', done => {
 
         request(API)
-            .delete('/api/agents/007')
+            .delete('/api/agents/3gJdiCZNajh57AiGq9mm/007')
             .set('Accept', 'application/json')
-            .set('x-token', 'bad000eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4Mzc4MzIsImV4cCI6MTYzMzg1MjIzMn0.JduoFYLmgbwDQccBzKGfxrjDXNyVmXGzwHvghdsllWs')
+            .set('x-token', 'bad')
             .expect('Content-Type', 'application/json; charset=utf-8')
             .expect(401)
             .expect({
@@ -694,7 +779,7 @@ mocha.describe('DELETE /api/agents:id', () => {
             request(API)
                 .delete('/api/agents')
                 .set('Accept', 'application/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .expect('Content-Type', 'text/html; charset=utf-8')
                 .expect(404)
                 .end( err => {
@@ -707,9 +792,9 @@ mocha.describe('DELETE /api/agents:id', () => {
         mocha.it('replay with json errors message of the identification param is not numeric', done => {
 
             request(API)
-                .delete('/api/agents/008jk')
+                .delete('/api/agents/3gJdiCZNajh57AiGq9mm/008jk')
                 .set('Accept', 'applicacion/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .expect(400)
                 .expect({
                     "errors": [
@@ -737,9 +822,9 @@ mocha.describe('DELETE /api/agents:id', () => {
         mocha.it('replay with json errors message of the identification field when id is already in database', done => {
 
             request(API)
-                .delete('/api/agents/088')
+                .delete('/api/agents/3gJdiCZNajh57AiGq9mm/088')
                 .set('Accept', 'applicacion/json')
-                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzM4ODQ1ODUsImV4cCI6MTYzMzg5ODk4NX0.0TTbCysEaAMhOa65Rp-zxQeVPY9ZRgCLihRpp6062hI')
+                .set('x-token', 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1aWQiOiIxMDIiLCJpYXQiOjE2MzU1Mzk3MTYsImV4cCI6MTYzNTU1NDExNn0.ER3bPAPNSkbwks-M_ljmBB0UcnanntBTKFrRl3GcdMo')
                 .expect(400)
                 .expect({
                     "errors": [
@@ -757,6 +842,5 @@ mocha.describe('DELETE /api/agents:id', () => {
                 })
         });
     });
-
 
 });
