@@ -28,7 +28,7 @@ export const uploadFile = async (req : Request, res : Response) => {
             case 'agents':
                 // Set collection and get data
                 collectionRef = db.collection('agents');
-                docRef = await getAgent(id);
+                docRef = await getAgent(id, userID as string);
                 
                 // Verification id there are documents
                 if(!docRef?.exists){
@@ -106,7 +106,7 @@ export const uploadFile = async (req : Request, res : Response) => {
             // Get new data
             switch (collection) {
                 case 'agents':
-                    resp = await getDataAgent(id);
+                    resp = await getDataAgent(id, userID as string);
                     return res.status(200).json(resp);
 
                 case 'products':
@@ -140,9 +140,9 @@ export const uploadFile = async (req : Request, res : Response) => {
     }
 }
 
-const getDataAgent = async (id : string) => {
+const getDataAgent = async (id : string, userID : string) => {
 
-    const docRef = await getAgent(id);
+    const docRef = await getAgent(id, userID);
     return {
         ok: true,
         data : docRef?.data()

@@ -45,7 +45,7 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             case 'agents':
                 // Set collection and get data
                 collectionRef = config_1.default.collection('agents');
-                docRef = yield (0, agent_1.getAgent)(id);
+                docRef = yield (0, agent_1.getAgent)(id, userID);
                 // Verification id there are documents
                 if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
                     return res.status(400).json({
@@ -109,7 +109,7 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
             // Get new data
             switch (collection) {
                 case 'agents':
-                    resp = yield getDataAgent(id);
+                    resp = yield getDataAgent(id, userID);
                     return res.status(200).json(resp);
                 case 'products':
                     resp = yield getDataProduct(id, userID);
@@ -140,8 +140,8 @@ const uploadFile = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.uploadFile = uploadFile;
-const getDataAgent = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const docRef = yield (0, agent_1.getAgent)(id);
+const getDataAgent = (id, userID) => __awaiter(void 0, void 0, void 0, function* () {
+    const docRef = yield (0, agent_1.getAgent)(id, userID);
     return {
         ok: true,
         data: docRef === null || docRef === void 0 ? void 0 : docRef.data()
