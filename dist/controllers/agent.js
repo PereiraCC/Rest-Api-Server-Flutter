@@ -110,11 +110,11 @@ const postAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.postAgent = postAgent;
 const putAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get id param and data
-    const { id } = req.params;
+    const { userID, id } = req.params;
     const data = __rest(req.body, []);
     try {
         // Obtain the identification document
-        let docRef = yield (0, exports.getAgent)(id);
+        let docRef = yield (0, exports.getAgent)(id, userID);
         // Verification if there is an agent
         if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
             return res.status(400).json({
@@ -124,10 +124,11 @@ const putAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
         // Fields: identification and status 
         data.identification = docRef === null || docRef === void 0 ? void 0 : docRef.data().identification;
         data.status = true;
+        data.userID = docRef === null || docRef === void 0 ? void 0 : docRef.data().userID;
         // Update the document with new data
         yield agentRef.doc(docRef === null || docRef === void 0 ? void 0 : docRef.id).update(data);
         // Obtain the new data
-        docRef = yield (0, exports.getAgent)(id);
+        docRef = yield (0, exports.getAgent)(id, userID);
         // Send data
         res.json({
             ok: true,
@@ -145,10 +146,10 @@ const putAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 exports.putAgent = putAgent;
 const deleteAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // Get id param
-    const { id } = req.params;
+    const { userID, id } = req.params;
     try {
         // Obtain the identification document
-        let docRef = yield (0, exports.getAgent)(id);
+        let docRef = yield (0, exports.getAgent)(id, userID);
         // Verification if there is an agent
         if (!(docRef === null || docRef === void 0 ? void 0 : docRef.exists)) {
             return res.status(400).json({
@@ -160,7 +161,7 @@ const deleteAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
             status: false
         });
         // Obtain new data 
-        docRef = yield (0, exports.getAgent)(id, false);
+        docRef = yield (0, exports.getAgent)(id, userID, false);
         // Send data
         res.json({
             ok: true,
@@ -176,10 +177,11 @@ const deleteAgent = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     }
 });
 exports.deleteAgent = deleteAgent;
-const getAgent = (id, status = true) => __awaiter(void 0, void 0, void 0, function* () {
+const getAgent = (id, userID, status = true) => __awaiter(void 0, void 0, void 0, function* () {
     // Obtain all agents with status true / false (param) and id equal
     const resp = yield agentRef.where('status', '==', status)
-        .where('identification', '==', id).get();
+        .where('identification', '==', id)
+        .where('userID', '==', userID).get();
     // From the list obtain documento with id equal
     const docRef = resp.docs.find((doc) => {
         if (doc.data().identification === id) {

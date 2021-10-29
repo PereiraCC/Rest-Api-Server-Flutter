@@ -106,13 +106,13 @@ export const postAgent = async (req : Request, res : Response) => {
 export const putAgent = async (req : Request, res : Response) => {
 
     // Get id param and data
-    const { id } = req.params;
+    const { userID, id } = req.params;
     const { ...data } = req.body;
 
     try {
         
         // Obtain the identification document
-        let docRef = await getAgent(id);
+        let docRef = await getAgent(id, userID);
 
         // Verification if there is an agent
         if(!docRef?.exists){
@@ -124,12 +124,13 @@ export const putAgent = async (req : Request, res : Response) => {
         // Fields: identification and status 
         data.identification = docRef?.data().identification;
         data.status = true;
+        data.userID = docRef?.data().userID;
 
         // Update the document with new data
         await agentRef.doc(docRef?.id).update(data);
 
         // Obtain the new data
-        docRef = await getAgent(id);
+        docRef = await getAgent(id, userID);
 
         // Send data
         res.json({
@@ -149,12 +150,12 @@ export const putAgent = async (req : Request, res : Response) => {
 export const deleteAgent = async (req : Request, res : Response) => {
 
     // Get id param
-    const { id } = req.params;
+    const { userID, id } = req.params;
 
     try {
 
         // Obtain the identification document
-        let docRef = await getAgent(id);
+        let docRef = await getAgent(id, userID);
 
         // Verification if there is an agent
         if(!docRef?.exists){
@@ -169,7 +170,7 @@ export const deleteAgent = async (req : Request, res : Response) => {
         });
 
         // Obtain new data 
-        docRef = await getAgent(id, false);
+        docRef = await getAgent(id, userID, false);
 
         // Send data
         res.json({
@@ -186,11 +187,12 @@ export const deleteAgent = async (req : Request, res : Response) => {
     }
 }
 
-export const getAgent = async (id : String, status = true) => {
+export const getAgent = async (id : string, userID : string, status = true) => {
 
     // Obtain all agents with status true / false (param) and id equal
     const resp = await agentRef.where('status', '==', status)
-                                   .where('identification','==', id).get();
+                                   .where('identification','==', id)
+                                   .where('userID', '==', userID).get();
 
     // From the list obtain documento with id equal
     const docRef = resp.docs.find((doc) => {

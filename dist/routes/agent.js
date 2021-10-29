@@ -27,29 +27,33 @@ router.post('/', [
     validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('identification', 'The identification field is required.').not().isEmpty(),
     (0, express_validator_1.check)('identification', 'The identification field must be numeric').isNumeric(),
-    // check('identification').custom(inyectionSqlInputs),
     (0, express_validator_1.check)('identification').custom(value => (0, db_validators_1.existsIdentification)(value, 'agents', 'identification')),
     (0, express_validator_1.check)('name', 'The name field is required.').not().isEmpty(),
-    // check('name').custom(inyectionSqlInputs),
     (0, express_validator_1.check)('lastname', 'The last name field is required.').not().isEmpty(),
     (0, express_validator_1.check)('email', 'The email field is required.').not().isEmpty(),
     (0, express_validator_1.check)('email', 'The email field is invalid.').isEmail(),
     (0, express_validator_1.check)('phone', 'The phone field is required.').not().isEmpty(),
     (0, express_validator_1.check)('phone', 'The phone field must be numeric').isNumeric(),
+    (0, express_validator_1.check)('userID', 'The user ID field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('userID').custom(value => (0, db_validators_1.existsIDFirebase)(value, 'users')),
     inputs_validation_1.fieldsValidation
 ], agent_1.postAgent);
 // Update an agent
-router.put('/:id', [
+router.put('/:userID/:id', [
     validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
     (0, express_validator_1.check)('id').custom(value => (0, db_validators_1.existsbyId)(value, 'agents', 'identification')),
+    (0, express_validator_1.check)('userID', 'The userID field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('userID').custom(value => (0, db_validators_1.existsIDFirebase)(value, 'users')),
     inputs_validation_1.fieldsValidation
 ], agent_1.putAgent);
 // Delete an agent (Status in false)
-router.delete('/:id', [
+router.delete('/:userID/:id', [
     validation_jwt_1.validationJWT,
     (0, express_validator_1.check)('id', 'The identification parameter must be numeric.').isNumeric(),
     (0, express_validator_1.check)('id').custom(value => (0, db_validators_1.existsbyId)(value, 'agents', 'identification')),
+    (0, express_validator_1.check)('userID', 'The userID field is required.').not().isEmpty(),
+    (0, express_validator_1.check)('userID').custom(value => (0, db_validators_1.existsIDFirebase)(value, 'users')),
     inputs_validation_1.fieldsValidation
 ], agent_1.deleteAgent);
 exports.default = router;
