@@ -4,7 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "mocha dist/tests/auth.test.js --exit",
+    "test": "mocha dist/tests/products.test.js --exit",
     "dev": "nodemon dist/app.js",
     "start": "node dist/app.js"
   },
