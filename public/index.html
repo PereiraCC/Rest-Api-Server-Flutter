@@ -3,10 +3,11 @@
 
 <head>
   <meta charset="UTF-8">
+  <link rel="icon" href="./iconPereira.png" />
   <meta http-equiv="X-UA-Compatible" content="IE=edge">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My management REST API</title>
-
+  
   <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.1/dist/css/bootstrap.min.css" rel="stylesheet"
     integrity="sha384-F3w7mX95PdgyTmZZMECAngseQB83DfGTowi0iMjiWaeVhAn4FJkqJByhZMI3AhiU" crossorigin="anonymous">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap-avatar@1.0.3/dist/avatar.min.css" rel="stylesheet">
@@ -61,152 +62,315 @@
     <br/>
 
     <blockquote class="blockquote">
+      
+      <div class="row">
+        <div class="col2">
+          <h3 class="h3">Version 1.0.0</h3>
+        </div>
+        <div class="col3">
+          <a href="https://documenter.getpostman.com/view/14542124/UUxuj9tR" class="btn btn-primary">View
+            documentation</a>
+        </div>
+        <div class="col1">
+          <a class="linkMenu" href="#users">Users</a>
+        </div>
+        <div class="col-2">
+          <a class="linkMenu" href="#auth">Authentication</a>
+        </div>
+        <div class="col1-1">
+          <a class="linkMenu" href="#agents">Agents</a>
+        </div>
+        <div class="col1-1">
+          <a class="linkMenu" href="#products">Products</a>
+        </div>
+        <div class="col1">
+          <a class="linkMenu" href="#uploads" >Uploads</a>
+        </div>
+      </div>
+
+      <br />
+      
       <p>
         This is the REST API of my company management. This was developed in node js with express framework, it connects with firebase as a database.
         You can find the source code <a href="https://github.com/PereiraCC/Rest-Api-Server-Flutter.git" target="_blank">here</a> you can also contact for an upgrade request. <br/>
       </p>
 
-      <div class="row">
-        <div class="col-3">
-          <h3 class="h3">Version 0.8.0</h3>
-        </div>
-        <div class="col-3">
-          <a href="https://documenter.getpostman.com/view/14542124/UUxuj9tR" class="btn btn-primary">View
-            documentation</a>
-        </div>
-      </div>
-
       <hr>
       <br>
-
-      <div class="col">
-        <p class="h4">Users</p>
+      
+      <div class="col" id="users">
+        <p class="h4">USERS</p>
         <p>
-          This is the users' path where it contains the following actions:
+          This is the users path where it contains the following actions:
         </p>
         <ol>
-          <li>GET api/users: Get all registered users</li>
+
+          <li> <strong>GET ALL USERS: </strong>Get all registered users with pagination</li>
+            <p class="customURL">GET: https://rest-server-agents-pereira.herokuapp.com/api/users?limit=10&from=1</p>
             <ul>
-              <li>No require params</li>
-              <li>No require authorization</li>
+              <li>
+                Params
+                <ol>
+                  <li>limit (Number)</li>
+                  <li>from  (Number)</li>
+                </ol>
+              </li>
+              <li>No require authorization (No JWT)</li>
             </ul>
             <br/>
-          <li>GET:ID api/users: Get a specific user by means of their id</li>
+
+          <li> <strong>GET A USER: </strong>Get a specific user by means of their id</li>
+            <p class="customURL">GET: https://rest-server-agents-pereira.herokuapp.com/api/users/001</p>
             <ul>
-              <li>Params: Identification of a user</li>
+              <li>
+                Params
+                <ol>
+                  <li>Identification of user</li>
+                </ol>
+              </li>
               <li>Require authorization</li>
             </ul>
             <br/>
-          <li>POST api/users: Create new user</li>
+
+          <li><strong>CREATE NEW USER</strong></li>
+            <p class="customURL">POST: https://rest-server-agents-pereira.herokuapp.com/api/users</p>
             <ul>
               <li>No require params</li>
-              <li>Require JSON data</li>
+              <li>Require JSON data with new data</li>
               <li>No require authorization</li>
             </ul>
             <br/>
-          <li>PUT: api/users: Update an user</li>
+
+          <li><strong>UPDATE A USER</strong></li>
+            <p class="customURL">PUT: https://rest-server-agents-pereira.herokuapp.com/api/users/001</p>
             <ul>
-              <li>Params: Identification of a user</li>
+              <li>
+                Params
+                <ol>
+                  <li>Identification of user</li>
+                </ol>
+              </li>
               <li>Require JSON data</li>
               <li>Require authorization</li>
             </ul>
             <br/>
-          <li>DELETE: api/users: Delete an user</li>
+
+          <li><strong>DELETE A USER</strong></li>
+            <p class="customURL">DELETE: https://rest-server-agents-pereira.herokuapp.com/api/users/001</p>
             <ul>
-              <li>Params: Identification of a user</li>
+              <li>
+                Params
+                <ol>
+                  <li>Identification of user</li>
+                </ol>
+              </li>
               <li>Require authorization</li>
             </ul>
             <br/>
         </ol>
       </div>
 
-      <div class="col">
-        <p class="h4">Authentication</p>
+      <div class="col" id="auth">
+        <p class="h4">AUTHENTICATION</p>
         <p>
           This is the authentication path where it contains the following actions:
         </p>
         <ol>
-          <li>POST api/auth/login: Log in with email and password</li>
+          <li><strong>AUTHENTICATION MANUAL: </strong>Log in with email and password</li>
+            <p class="customURL">POST: https://rest-server-agents-pereira.herokuapp.com/api/auth/login</p>
             <ul>
               <li>No require params</li>
-              <li>Require JSON data</li>
-              <li>No require authorization</li>
+              <li>Require JSON data (Email and password)</li>
+              <li>No require authorization (No JWT)</li>
             </ul>
             <br/>
-            <li>POST api/auth/google: Log in with google sing in </li>
-            <ul>
-              <li>No require params</li>
-              <li>Require JSON data (google id_token)</li>
-              <li>No require authorization</li>
-            </ul>
+
+            <li><strong>AUTHENTICATION WITH GOOGLE: </strong>Log in with google sing in </li>
+              <p class="customURL">POST: https://rest-server-agents-pereira.herokuapp.com/api/auth/google</p>  
+              <ul>
+                <li>No require params</li>
+                <li>Require JSON data (google id_token)</li>
+                <li>No require authorization</li>
+              </ul>
             <br/>
+
+            <li><strong>JSON WEB TOKEN (JWT) VALIDATION</strong></li>
+              <p class="customURL">POST: https://rest-server-agents-pereira.herokuapp.com/api/auth/validJWT</p>  
+              <ul>
+                <li>No require params</li>
+                <li>Require JSON data (token)</li>
+                <li>No require authorization</li>
+              </ul>
+            <br/>
+
         </ol>
       </div>
         
-      <div class="col">
-        <p class="h4">Agents</p>
+      <div class="col" id="agents">
+        <p class="h4">AGENTS</p>
         <p>
           This is the path of the agents where it contains the following actions:
         </p>
         <ol>
-          <li>GET api/agents: Get all registered agents</li>
+          <li><strong>GET ALL AGENTS: </strong>Get all registered agents</li>
+            <p class="customURL">GET: https://rest-server-agents-pereira.herokuapp.com/api/agents/123ABC</p>
             <ul>
-              <li>No require params</li>
-              <li>No require authorization</li>
+              <li>
+                Params:
+                <ol>
+                  <li>Identification of a user</li>
+                  <li>Pagination</li>
+                  <ul>
+                    <li>limit (Number)</li>
+                    <li>from (Number)</li>
+                  </ul>
+                </ol>
+              </li>
+              <li>No require authorization (No JWT)</li>
             </ul>
             <br/>
-          <li>GET:ID api/agents: Get a specific agent by means of their id</li>
+
+          <li><strong>GET AN AGENT: </strong>Get a specific agent by means of their id</li>
+            <p class="customURL">GET: https://rest-server-agents-pereira.herokuapp.com/api/agents/123ABC/001</p>
             <ul>
-              <li>Params: Identification of a agent</li>
+              <li>
+                Params:
+                <ol>
+                  <li>Identification of a user</li>
+                  <li>Identification of an agent</li>
+                </ol>
+              </li>
               <li>Require authorization</li>
             </ul>
             <br/>
-          <li>POST api/agents: Create new agent</li>
+
+          <li><strong>CREATE NEW AGENT</strong></li>
+            <p class="customURL">POST: https://rest-server-agents-pereira.herokuapp.com/api/agents</p>
             <ul>
               <li>No require params</li>
               <li>Require JSON data</li>
-              <li>No require authorization</li>
+              <li>No require authorization (No JWT)</li>
             </ul>
             <br/>
-          <li>PUT: api/agents: Update an agent</li>
+
+          <li><strong>UPDATE AN AGENT</strong></li>
+            <p class="customURL">PUT: https://rest-server-agents-pereira.herokuapp.com/api/agents/123ABC/001</p>
             <ul>
-              <li>Params: Identification of a agent</li>
+              <li>
+                Params:
+                <ol>
+                  <li>Identification of a user</li>
+                  <li>Identification of an agent</li>
+                </ol>
+              </li>
               <li>Require JSON data</li>
               <li>Require authorization</li>
             </ul>
             <br/>
-          <li>DELETE: api/agents: Delete an agent</li>
+
+          <li><strong>DELETE AN AGENT</strong></li>
+            <p class="customURL">DELETE: https://rest-server-agents-pereira.herokuapp.com/api/agents/123ABC/001</p>
             <ul>
-              <li>Params: Identification of a agent</li>
+              <li>
+                Params:
+                <ol>
+                  <li>Identification of a user</li>
+                  <li>Identification of an agent</li>
+                </ol>
+              </li>
               <li>Require authorization</li>
             </ul>
             <br/>
         </ol>
       </div>
 
-      <div class="col">
-        <p class="h4">Uploads images</p>
+      <div class="col" id="products">
+        <p class="h4">PRODUCTS</p>
         <p>
-          This is the uploads path where it contains the following actions:
+          This is the products path where it contains the following actions:
         </p>
         <ol>
-          <li>PUT:ID api/uploads/users: Upload image for a user</li>
+
+          <li> <strong>GET ALL PRODUCTS:</strong> Get all registered products with pagination</li>
+          <p class="customURL">GET: https://rest-server-agents-pereira.herokuapp.com/api/products/123ABC</p>
             <ul>
-              <li>Params: Identification of a user</li>
-              <li>Require file (Image)</li>
+              <li>
+                Params:
+                <ol>
+                  <li>Identification of a user</li>
+                  <li>Pagination</li>
+                  <ul>
+                    <li>limit (Number)</li>
+                    <li>from (Number)</li>
+                  </ul>
+                </ol>
+              </li>
+              <li>No require authorization (No JWT)</li>
+            </ul>
+            <br/>
+
+          <li><strong>GET A PRODUCT: </strong> Get a specific product by means of their id</li>
+            <p class="customURL">GET: https://rest-server-agents-pereira.herokuapp.com/api/products/123ABC/001</p>
+            <ul>
+              <li>
+                Params:
+                <ol>
+                  <li>Identification of a user</li>
+                  <li>ID of a product</li>
+                </ol>
+              </li>
               <li>Require authorization</li>
             </ul>
             <br/>
-            <li>PUT:ID api/uploads/agents: Upload image for an agent</li>
-              <ul>
-                <li>Params: Identification of a agent</li>
-                <li>Require file (Image)</li>
-                <li>Require authorization</li>
-              </ul>
+
+          <li> <strong>CREATE A NEW PRODUCT</strong></li>
+            <p class="customURL">POST: https://rest-server-agents-pereira.herokuapp.com/api/products</p>
+            <ul>
+              <li>No require params</li>
+              <li>Require JSON data (view documentation)</li>
+              <li>Require authorization</li>
+            </ul>
             <br/>
+
+          <li><strong>UPDATE A PRODUCT</strong></li>
+            <p class="customURL">PUT: https://rest-server-agents-pereira.herokuapp.com/api/products/123ABC/001</p>
+            <ul>
+              <li>
+                Params:
+                <ol>
+                  <li>Identification of a user</li>
+                  <li>ID of a product</li>
+                </ol>
+              </li>
+              <li>Require JSON data with new data</li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+
+          <li><strong>DELETE A PRODUCT</strong></li>
+            <p class="customURL">DELETE: https://rest-server-agents-pereira.herokuapp.com/api/products/123ABC/001</p>
+            <ul>
+              <li>
+                Params:
+                <ol>
+                  <li>Identification of a user</li>
+                  <li>ID of a product</li>
+                </ol>
+              </li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+
         </ol>
+      </div>
+
+      <div class="col" id="uploads">
+        <p class="h4">UPLOADS IMAGES</p>
         <p>
-          Allowed extensions
+          This is the uploads path where it contains the following actions:
+        </p>
+        <p>
+          <strong>Allowed extensions</strong>
         </p>
           <ul>
             <li>png</li>
@@ -214,6 +378,52 @@
             <li>jpeg</li>
             <li>gif</li>
           </ul>
+        <ol>
+          <li><strong> UPLOAD IMAGE FOR A USER</strong></li>
+            <p class="customURL">PUT: https://rest-server-agents-pereira.herokuapp.com/api/uploads/users/001</p>
+            <ul>
+              <li>
+                Params:
+                <ol>
+                  <li>Identification of a user</li>
+                </ol>
+              </li>
+              <li>Require file (Image)</li>
+              <li>Require authorization</li>
+            </ul>
+            <br/>
+
+            <li><strong> UPLOAD IMAGE FOR AN AGENT</strong></li>
+            <p class="customURL">PUT: https://rest-server-agents-pereira.herokuapp.com/api/uploads/agents/017?userID=123ABC</p>
+              <ul>
+                <li>
+                  Params:
+                  <ol>
+                    <li>Identification of an agent</li>
+                    <li>Identification of a user (userID) </li>
+                  </ol>
+                </li>
+                <li>Require file (Image)</li>
+                <li>Require authorization</li>
+              </ul>
+            <br/>
+
+            <li><strong> UPLOAD IMAGE FOR A PRODUCT</strong></li>
+            <p class="customURL">PUT: https://rest-server-agents-pereira.herokuapp.com/api/uploads/products/408?userID=123ABC</p>
+              <ul>
+                <li>
+                  Params:
+                  <ol>
+                    <li>Identification of a product</li>
+                    <li>Identification of a user (userID) </li>
+                  </ol>
+                </li>
+                <li>Require file (Image)</li>
+                <li>Require authorization</li>
+              </ul>
+            <br/>
+        </ol>
+        
       </div>
 
     </blockquote>
@@ -227,7 +437,7 @@
     <br>
     <div class="col-2 col-sm-4">
       <figcaption class="blockquote-footer">
-        Carlos Pereira Coto - October 11, 2021
+        Carlos Pereira Coto - November 03, 2021
       </figcaption>
     </div>
     
