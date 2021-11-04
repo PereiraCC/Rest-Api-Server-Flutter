@@ -33,17 +33,32 @@ const agentRef = config_1.default.collection('agents');
 const getAgents = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { userID } = req.params;
-        // Get all agents with status in true
-        const resp = yield agentRef.orderBy('identification')
+        const { limit = 10, from = 1 } = req.query;
+        // Get all data to the limit
+        const data = yield agentRef
+            .orderBy('identification')
+            .limit(from)
+            .where('userID', '==', userID).get();
+        // Verification if docs
+        if (from > data.docs.length || data.docs.length == 0) {
+            return res.status(200).json({
+                ok: true,
+                total: 0,
+                documents: []
+            });
+        }
+        // Get data with filters
+        const resp = yield agentRef
+            .orderBy('identification')
+            .limit(limit)
+            .startAt(data.docs[from - 1])
             .where('status', '==', true)
             .where('userID', '==', userID).get();
-        // Processing collection data
-        const documents = (0, returnDocsFirebase_1.returnDocsFirebase)(resp);
         // Send data
         return res.status(200).json({
             ok: true,
-            total: documents.length,
-            documents
+            total: resp.docs.length,
+            documents: (0, returnDocsFirebase_1.returnDocsFirebase)(resp)
         });
     }
     catch (error) {

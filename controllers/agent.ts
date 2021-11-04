@@ -13,20 +13,36 @@ export const getAgents = async (req : Request, res : Response) => {
     try {
 
         const { userID } = req.params;
+        const { limit = 10, from = 1 } = req.query;
 
-        // Get all agents with status in true
-        const resp = await agentRef.orderBy('identification')
-                                   .where('status', '==', true)
-                                   .where('userID', '==', userID).get();
+        // Get all data to the limit
+        const data = await agentRef
+            .orderBy('identification')
+            .limit(from as number)
+            .where('userID', '==', userID).get();
 
-        // Processing collection data
-        const documents = returnDocsFirebase(resp);
+        // Verification if docs
+        if(from as number > data.docs.length || data.docs.length == 0) {
+            return res.status(200).json({
+                ok: true,
+                total : 0,
+                documents: []
+            });
+        }
+
+        // Get data with filters
+        const resp = await agentRef
+            .orderBy('identification')
+            .limit(limit as number)
+            .startAt(data.docs[from as number - 1])
+            .where('status', '==', true)
+            .where('userID', '==', userID).get();
 
         // Send data
         return res.status(200).json({
             ok: true,
-            total : documents.length,
-            documents
+            total : resp.docs.length,
+            documents : returnDocsFirebase(resp)
         });
 
     } catch (error) {
